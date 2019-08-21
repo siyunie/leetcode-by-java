@@ -45,3 +45,44 @@ class Solution {
         return s.substring(temp-max+1,temp+1);
     }
 }
+
+
+/*方法二：中心扩展
+选定一个中心向外扩展，判断字符是否相等，因为回文字符串分奇数长度和偶数长度所以一共有n+n-1种可能*/
+
+class Solution {
+    public String longestPalindrome(String s) {
+        if(s.length()==0){
+            return "";
+        }
+        int first=0;
+        int second=0;
+        int pre=0;
+        int next=0;
+        int max=0;
+        for(int i=0;i<s.length();i++){
+            
+            first=expandAroundCenter(s,i,i+1);//偶数串
+            second=expandAroundCenter(s,i,i);//奇数串
+            max=Math.max(first,second);
+            if(max>next-pre){
+                pre=i-(max-1)/2;
+                next=i+max/2;
+            }
+            }
+        return s.substring(pre,next+1);
+    }
+    
+    public static int expandAroundCenter(String s,int left,int right){
+        if(right>=s.length()){
+            return 0;
+        }else if(s.charAt(left)!=s.charAt(right)){
+            return 0;
+        }
+        while(left>=0&&right<s.length()&&s.charAt(left)==s.charAt(right)){
+            left--;
+            right++;
+        }
+        return right-left-1;
+    }
+}
