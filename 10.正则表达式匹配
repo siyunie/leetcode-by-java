@@ -1,0 +1,20 @@
+方法一：回溯递归
+考虑到如果没有*，结果就非常简单
+如果有*，一定有前一个数，并与前一个数组成组合
+可以分为两种情况，第一直接忽略这个组合，然后继续匹配s与p.substring(2)。第二前一个数匹配，即firstMatch,然后继续匹配s.substring(1),p
+这两种情况满足其中之一就可以
+注意需要考虑p与s匹配后为空的情况，如果p为空s必然为空，但是反之不成立，即s为空p不一定为空，因为*可以匹配0个
+
+class Solution {
+    public boolean isMatch(String s, String p) {
+        if(p.length()==0){
+            return s.length()==0;
+        }
+        boolean firstMatch=(s.length()!=0)&&((s.charAt(0)==p.charAt(0))||(p.charAt(0)=='.'));
+        if(p.length()>=2&&p.charAt(1)=='*'){
+            return isMatch(s,p.substring(2))||(firstMatch&&isMatch(s.substring(1),p));
+        }else{
+            return firstMatch&&isMatch(s.substring(1),p.substring(1));
+        }
+    }
+}
