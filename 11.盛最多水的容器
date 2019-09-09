@@ -1,5 +1,17 @@
+/*
+给定 n 个非负整数 a1，a2，...，an，每个数代表坐标中的一个点 (i, ai) 。在坐标内画 n 条垂直线，垂直线 i 的两个端点分别为 (i, ai) 和 (i, 0)。找出其中的两条线，使得它们与 x *轴共同构成的容器可以容纳最多的水。
+说明：你不能倾斜容器，且 n 的值至少为 2。
+示例:
+输入: [1,8,6,2,5,4,8,3,7]
+输出: 49
+*/
+
+
+
+/*
 方法一：暴力破解
 时间复杂度过高
+*/
 
 class Solution {
     public int maxArea(int[] height) {
@@ -7,6 +19,28 @@ class Solution {
         for(int i=0;i<height.length-1;i++){
             for(int j=i+1;j<height.length;j++){
                 max=Math.max(max,Math.min(height[i],height[j])*(j-i));
+            }
+        }
+        return max;
+    }
+}
+
+/*
+方法二：双指针法
+维持两个指针，一个指向数组头部，另一个指向尾部，短指针向长指针移动
+考虑到短指针为限制面积的因素，当短指针向长指针移动时，尽管宽度在减少，但是长度可能增加，可能会得到更大的面积
+仅需要遍历一次，时间复杂度O（1）
+*/
+
+class Solution {
+    public int maxArea(int[] height) {
+        int left=0,right=height.length-1,max=0;
+        while(left<right){
+            max=Math.max(max,Math.min(height[left],height[right])*(right-left));
+            if(height[left]<height[right]){
+                left++;
+            }else{
+                right--;
             }
         }
         return max;
