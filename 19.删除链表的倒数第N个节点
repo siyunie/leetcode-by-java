@@ -1,0 +1,44 @@
+/*
+给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。
+
+示例：
+
+给定一个链表: 1->2->3->4->5, 和 n = 2.
+
+当删除了倒数第二个节点后，链表变为 1->2->3->5.
+说明：
+
+给定的 n 保证是有效的。
+*/
+
+/*
+方法一：维持两个指针pre和last，间隔n，当last到链表末尾时，删除pre的下一节点
+注意可能链表只有一个数，删除后为空链表，所以不能直接返回head节点
+因此new一个新节点作为head节点的前一个节点，最后返回此节点的next节点
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode node=new ListNode(0);
+        node.next=head;
+        ListNode pre=node;
+        ListNode last=node;
+        for(int i=0;i<n;i++){
+            pre=pre.next;
+        }
+        while(pre.next!=null){
+            pre=pre.next;
+            last=last.next;
+        }
+        last.next=last.next.next;
+        return node.next;
+    }
+}
