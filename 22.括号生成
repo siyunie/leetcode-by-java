@@ -1,0 +1,65 @@
+/*
+给出 n 代表生成括号的对数，请你写出一个函数，使其能够生成所有可能的并且有效的括号组合。
+
+例如，给出 n = 3，生成结果为：
+
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+*/
+
+/*
+方法一：动态规划
+n对括号的情况等于n-1对加一对，默认n对括号的情况的最左边括号是第n对括号的左括号，那么剩下的括号要么在右括号左边要么在右边，即
+"("+ q个"("+ ")"+ p个")"     p+q=n-1
+注意这里generateParenthesis(int n)返回的是list，所以迭代的时候要用String s:generateParenthesis(i)，这样list add的才是String
+考虑可以保存中间结果减少运算次数，但是具体怎么做没考虑出来？
+*/
+
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> list=new ArrayList<>();
+        if(n==0){
+            list.add("");
+        }else{
+            for(int i=0;i<n;i++){
+                for(String left:generateParenthesis(i)){
+                    for(String right:generateParenthesis(n-1-i)){
+                        list.add("("+left+")"+right);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+}
+
+/*
+方法二：回溯法
+利用left>=right来确定一定是现有左括号再有右括号，保证括号是有效的
+*/
+
+class Solution {
+    List<String> list=new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        traceback(0,0,"",n);
+        return list;
+    }
+    public void traceback(int left,int right,String s,int n){
+        if(left>n||right>n){
+            return;
+        }
+        if(left==n&&right==n){
+            list.add(s);
+            return;
+        }
+        if(left>=right){
+            traceback(left+1,right,s+"(",n);
+            traceback(left,right+1,s+")",n);
+        }
+    }
+}
