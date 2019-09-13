@@ -1,0 +1,53 @@
+/*
+给定一个只包含 '(' 和 ')' *的字符串，找出最长的包含有效括号的子串的长度。
+
+示例 1:
+
+输入: "(()"
+输出: 2
+解释: 最长有效括号子串为 "()"
+示例 2:
+
+输入: ")()())"
+输出: 4
+解释: 最长有效括号子串为 "()()"
+
+*/
+
+/*
+方法一：用left表示（个数，right表示）个数，先从左向右遍历，规则是，当left=right时记录此时长度为有效字串，当left<right时归零。
+然后从右向左遍历，规则类似,之所以要逆向遍历一遍是为了避免有些情况考虑不到
+*/
+
+class Solution {
+    public int longestValidParentheses(String s) {
+        int max=0;
+        for(int i=0,left=0,right=0;i<s.length();i++){
+            if(s.charAt(i)=='('){
+                left++;
+            }else{
+                right++;
+            }
+            if(left==right){
+                max=Math.max(max,left*2);
+            }else if(left<right){
+                left=0;
+                right=0;
+            }
+        }
+        for(int i=s.length()-1,left=0,right=0;i>=0;i--){
+            if(s.charAt(i)==')'){
+                right++;
+            }else{
+                left++;
+            }
+            if(left==right){
+                max=Math.max(max,left*2);
+            }else if(right<left){
+                left=0;
+                right=0;
+            }
+        }
+        return max;
+    }
+}
