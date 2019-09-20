@@ -1,0 +1,53 @@
+/*
+给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+
+求在该柱状图中，能够勾勒出来的矩形的最大面积。
+
+示例:
+
+输入: [2,1,5,6,2,3]
+输出: 10
+*/
+
+/*
+方法一：暴力破解
+找出所有两根柱子的情况，并求出每种情况两根柱子间的最大面积
+第i~j根柱子间的高度最小值可以用i~j-1的高度最小值与第j根柱子高度比较得到
+*/
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        int max=0;
+        for(int i=0;i<heights.length;i++){
+            int min=Integer.MAX_VALUE;
+            for(int j=i;j<heights.length;j++){
+                min=Math.min(min,heights[j]);
+                max=Math.max(max,min*(j-i+1));
+            }
+        }
+        return max;
+    }
+}
+
+/*
+方法二：分治法
+先找出最矮柱子，求出最大面积，然后将最矮柱子分为左边和右边，对柱子左边和右边重复找最矮柱子并求最大面积的过程
+*/
+
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+        return mergeFind(heights,0,heights.length-1);
+    }
+    public int mergeFind(int[] heights,int left,int right){
+        if(left>right){
+            return 0;
+        }
+        int min=left;
+        for(int i=left;i<=right;i++){
+            if(heights[i]<heights[min]){
+                min=i;
+            }
+        }
+        return Math.max(heights[min]*(right-left+1),Math.max(mergeFind(heights,min+1,right),mergeFind(heights,left,min-1)));
+    }
+}
