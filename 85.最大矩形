@@ -1,0 +1,44 @@
+/*
+给定一个仅包含 0 和 1 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
+
+示例:
+
+输入:
+[
+  ["1","0","1","0","0"],
+  ["1","0","1","1","1"],
+  ["1","1","1","1","1"],
+  ["1","0","0","1","0"]
+]
+输出: 6
+*/
+
+/*
+方法一：动态规划
+用dp数组保存这个点的最大长度，即这个点之前在这一行有多少个连续的1，然后遍历这个点的正上方所有点，即同列所有点
+width=min(width,dp[i][j])，此列每一点都用此时的宽度*（此时的列坐标 -  一开始的点的列坐标）算出最大面积
+此点的最大面积即此列每一点的最大面积的最大值
+*/
+
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        if(matrix.length==0){
+            return 0;
+        }
+        int[][] dp=new int[matrix.length][matrix[0].length];
+        int width=0,max=0;
+        for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+                if(matrix[i][j]=='1'){
+                    dp[i][j]=j==0?1:dp[i][j-1]+1;
+                    width=dp[i][j];
+                    for(int k=i;k>=0;k--){
+                        width=Math.min(width,dp[k][j]);
+                        max=Math.max(max,width*(i-k+1));
+                    }
+                }
+            }
+        }
+        return max;
+    }
+}
