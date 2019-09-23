@@ -43,3 +43,31 @@ class Solution {
         return isMirror(r1.left,r2.right)&&isMirror(r1.right,r2.left);
     }
 }
+
+/*
+方法二：迭代
+*/
+
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        Queue<TreeNode> queue=new LinkedList<>();
+        queue.add(root);
+        queue.add(root);
+        while(!queue.isEmpty()){
+            TreeNode r1=queue.poll();
+            TreeNode r2=queue.poll();
+            if(r1==null&&r2==null){
+                continue;
+            }else if(r1==null||r2==null){
+                return false;
+            }else if(r1.val!=r2.val){
+                return false;
+            }
+            queue.add(r1.left);
+            queue.add(r2.right);
+            queue.add(r1.right);
+            queue.add(r2.left);
+        }
+        return true;
+    }
+}
