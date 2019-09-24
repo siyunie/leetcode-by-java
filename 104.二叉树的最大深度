@@ -1,0 +1,64 @@
+/*
+给定一个二叉树，找出其最大深度。
+
+二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+
+说明: 叶子节点是指没有子节点的节点。
+
+示例：
+给定二叉树 [3,9,20,null,null,15,7]，
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回它的最大深度 3 。
+
+*/
+
+/*
+方法一:递归+三目运算符
+*/
+
+class Solution {
+    public int maxDepth(TreeNode root) {
+        return root==null?0:Math.max(maxDepth(root.left),maxDepth(root.right))+1;
+    }
+}
+
+/*
+方法二：层序遍历
+BFS广度优先
+*/
+
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int level = 0;
+        int rest = 1;
+        int nextRest=0;
+        while(!queue.isEmpty()){
+            TreeNode r = queue.poll();
+            rest--;
+            if(r.left != null){
+                queue.offer(r.left);
+                nextRest++;
+            }
+            if(r.right != null){
+                queue.offer(r.right);
+                nextRest++;
+            }
+            if(rest == 0){
+                rest = nextRest;
+                level++;
+                nextRest = 0;
+            }
+        }
+        return level;
+    }
+}
