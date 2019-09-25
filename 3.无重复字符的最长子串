@@ -1,0 +1,71 @@
+/*
+给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+
+示例 1:
+
+输入: "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+示例 2:
+
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+*/
+
+/*
+方法一：滑动窗口思想
+维持一个滑动窗口，用Map实现，key为char，value为index+1，当end字符出现与滑动窗口内字符相同时，移动start至重复字符之后一位
+*/
+
+import java.util.HashMap;
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        //滑动窗口
+        HashMap<Character,Integer> map=new HashMap<>();
+        int max=0;
+        for(int start=0,end=0;end<s.length();end++){
+            if(map.containsKey(s.charAt(end))){
+                start=Math.max(start,map.get(s.charAt(end)));
+            }
+            max=Math.max(end-start+1,max);
+            map.put(s.charAt(end),end+1);//map值为坐标+1，确保每次比较是从重复字符串下一个字符开始
+        }
+        return max;
+    }
+}
+
+/*
+方法2
+*/
+
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if(s.length()==0){
+            return 0;
+        }
+        char[] arr=s.toCharArray();
+        int index=0;
+        int max=0;
+        int i=1,j=0;
+        
+        //从第二个数开始
+        for(;i<s.length();i++){
+            for(j=index;j<i;j++){
+                if(arr[j]==arr[i]){
+                    max=max>(i-index)?max:(i-index);
+                    index=j+1;
+                    break;
+                }
+            }
+        }
+        max=max>(i-index)?max:(i-index);
+        return max;
+    }
+}
