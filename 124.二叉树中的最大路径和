@@ -1,0 +1,51 @@
+/*
+给定一个非空二叉树，返回其最大路径和。
+
+本题中，路径被定义为一条从树中任意节点出发，达到任意节点的序列。该路径至少包含一个节点，且不一定经过根节点。
+
+示例 1:
+
+输入: [1,2,3]
+
+       1
+      / \
+     2   3
+
+输出: 6
+示例 2:
+
+输入: [-10,9,20,null,null,15,7]
+
+   -10
+   / \
+  9  20
+    /  \
+   15   7
+
+输出: 42
+
+*/
+
+/*
+方法一：递归
+最大路径包括当前节点有两种可能
+1.此节点的左右子树中大的那个加上这个节点然后向父节点回溯构成
+2.左右子树和此节点都在最大路径中，不经过父节点
+*/
+
+class Solution {
+    int max = Integer.MIN_VALUE;//维持一个全局变量作为最大路径值
+    public int maxPathSum(TreeNode root) {
+        returnMax(root);
+        return max;
+    }
+    public int returnMax(TreeNode r) {
+        if(r == null){
+            return 0;
+        }
+        int left = Math.max(returnMax(r.left),0); //如果子节点为负则置为0，不经过
+        int right = Math.max(returnMax(r.right),0);
+        max = Math.max(max, r.val + left + right);//判断是可能1还是可能2
+        return Math.max(left, right) + r.val;
+    }
+}
