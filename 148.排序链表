@@ -1,0 +1,66 @@
+/*
+在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
+
+示例 1:
+
+输入: 4->2->1->3
+输出: 1->2->3->4
+示例 2:
+
+输入: -1->5->3->4->0
+输出: -1->0->3->4->5
+
+*/
+
+/*
+方法一：归并加递归加双指针
+利用双指针来归并，避免额外空间需要
+维持一个slow指针每次走一步，一个fast指针每次走两步，一个pre指针指向slow指针的前指针
+当fast走到尾部时，slow走到中间，为断开点，将pre.next置为null，断开链表，再以head和slow为新的链表头递归分治
+*/
+
+class Solution {
+    public ListNode sortList(ListNode head) {
+        return head == null ? null : mergeSort(head);
+    }
+    
+    public ListNode mergeSort(ListNode head){
+        if(head.next == null){
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        ListNode pre = head;
+        while(fast !=null && fast.next != null){
+            pre = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        pre.next = null;    //断开分隔点
+        ListNode l = mergeSort(head);
+        ListNode r = mergeSort(slow);
+        return merge(l,r);
+    }
+    
+    public ListNode merge(ListNode l, ListNode r){
+        ListNode first = new ListNode(0);
+        ListNode temp = first;
+        while(l != null && r!=null){
+            if(l.val < r.val){
+                temp.next = l;
+                l = l.next;
+                temp = temp.next;
+            }else{
+                temp.next = r;
+                r = r.next;
+                temp = temp.next;
+            }
+        }
+        if(l != null){
+            temp.next = l;
+        }else if(r != null){
+            temp.next = r;
+        }
+        return first.next;
+    }
+}
