@@ -47,3 +47,25 @@ class Solution {
         return(nums[nums.length/2]);
     }
 }
+
+/*
+方法三：Boyer-Moore 摩尔投票算法
+取第一个值为众数候选，数相同则加1，不同则减1，如果归零则重新选下一个数为众数候选，这样会忽略同样多数目的众数和非众数，最后一个候选即为众数
+如果题目没有默认一定有众数，可以做两遍，第一遍找到最后的候选，第二遍判断是否真的过半数
+*/
+
+class Solution {
+    int candidate;
+    public int majorityElement(int[] nums) {
+        int count = 0;
+        for(int num : nums){
+            if(count == 0){
+                candidate = num;
+                count = 1;
+            }else{
+                count += num == candidate ? 1:-1;
+            }
+        }
+        return candidate;
+    }
+}
