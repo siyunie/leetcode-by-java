@@ -23,7 +23,7 @@
 */
 
 /*
-方法一：深度优先遍历
+方法一：深度优先遍历 DFS
 注意这里的grid是char数组，要判断grid[i][j] == '1' 而不是 1，在dfs方法内判断return时要注意不仅要marked[i][j] == true 还要判断grid[i][j] == '0'
 */
 
@@ -55,5 +55,56 @@ class Solution {
         dfs(grid, marked, i - 1, j);
         dfs(grid, marked, i, j + 1);
         dfs(grid, marked, i, j - 1);
+    }
+}
+
+
+/*
+方法二：广度优先遍历 BFS
+广度优先遍历不需要回溯
+广度优先遍历使用队列保存可能到达的元素，然后依次出队列并算出队列的值的可能路径，可能的路径一次入队列
+注意队列一定要在入队列时就标记已使用，因为这个元素很可能马上被即将出队列的其他元素的路径经过
+如果在出队列时再标记，会有很多重复的队列被计算，时间复杂度会超标
+*/
+
+class Solution {
+    public int numIslands(char[][] grid) {
+        if(grid.length == 0){
+            return 0;
+        }
+        boolean[][] marked = new boolean[grid.length][grid[0].length];
+        int count = 0;
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] == '1' && !marked[i][j]){
+                    count++;
+                    Queue<Integer> queue = new LinkedList<>();
+                    queue.offer(i*grid[0].length + j);
+                    marked[i][j] = true;
+                    while(!queue.isEmpty()){
+                        int temp = queue.poll();
+                        int row = temp/grid[0].length;
+                        int col = temp%grid[0].length;
+                        if(row - 1 >= 0 && !marked[row - 1][col] && grid[row - 1][col] == '1'){
+                            queue.offer((row - 1)*grid[0].length + col);
+                            marked[row - 1][col] = true;
+                        }
+                        if(row + 1 < grid.length && !marked[row + 1][col] && grid[row + 1][col] == '1'){
+                            queue.offer((row + 1)*grid[0].length + col);
+                            marked[row + 1][col] = true;
+                        }
+                        if(col - 1 >= 0 && !marked[row][col - 1] && grid[row][col - 1] == '1'){
+                            queue.offer(row * grid[0].length + col - 1);
+                            marked[row][col - 1] = true;
+                        }
+                        if(col + 1 < grid[0].length && !marked[row][col + 1] && grid[row][col + 1] == '1'){
+                            queue.offer(row * grid[0].length + col + 1);
+                            marked[row][col + 1] = true;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 }
