@@ -21,7 +21,7 @@
 */
 
 /*
-方法一：迭代
+方法一：迭代，层序遍历
 */
 
 class Solution {
@@ -76,6 +76,24 @@ class Solution {
         TreeNode right = root.right;
         root.right = invertTree(root.left);
         root.left = invertTree(right);
+        return root;
+    }
+}
+
+/*
+方法四：递归，中序遍历
+*/
+
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if(root == null){
+            return null;
+        }
+        invertTree(root.left);
+        TreeNode temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+        invertTree(root.left);
         return root;
     }
 }
