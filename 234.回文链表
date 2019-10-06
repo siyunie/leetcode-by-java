@@ -1,0 +1,56 @@
+/*
+请判断一个链表是否为回文链表。
+
+示例 1:
+
+输入: 1->2
+输出: false
+示例 2:
+
+输入: 1->2->2->1
+输出: true
+进阶：
+你能否用 O(n) 时间复杂度和 O(1) 空间复杂度解决此题？
+
+*/
+
+/*
+方法一：快慢指针+反转链表
+维持快指针和慢指针，找打链表中点，
+反转链表
+注意此时要通过快指针判断链表是奇数节点还是偶数，偶数的话，要忽略后半段链表的头节点
+比较前后链表
+*/
+
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        if(head == null || head.next == null){
+            return true;
+        }
+        ListNode slow = head.next;
+        ListNode fast = head.next.next;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode pre = null;
+        ListNode next = null;
+        while(next != slow){
+            next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+        if(fast != null){
+            slow = slow.next;
+        }
+        while(pre != null){
+            if(pre.val != slow.val){
+                return false;
+            }
+            pre = pre.next;
+            slow = slow.next;
+        }
+        return true;
+    }
+}
