@@ -1,0 +1,87 @@
+/*
+给定一个整数数组，你需要寻找一个连续的子数组，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+
+你找到的子数组应是最短的，请输出它的长度。
+
+示例 1:
+
+输入: [2, 6, 4, 8, 10, 9, 15]
+输出: 5
+解释: 你只需要对 [6, 4, 8, 10, 9] 进行升序排序，那么整个表都会变为升序排序。
+说明 :
+
+输入的数组长度范围在 [1, 10,000]。
+输入的数组可能包含重复元素 ，所以升序的意思是<=。
+
+*/
+
+/*
+方法一:复制原数组,然后排序,顺序找到排序后数组与原数组第一个不同的位置,然后倒序找第一个不同的位置,两个位置之间为结果
+注意当顺序找到第一个不同的位置时,一定要倒序再找,不能继续顺序直到相同为止,因为需要排序的子数组中间的某些数有可能位置和排序好的数组是相同的
+所以一定要倒序再找
+*/
+
+
+
+class Solution {
+    public int findUnsortedSubarray(int[] nums) {
+        int[] arr = Arrays.copyOf(nums, nums.length);
+        Arrays.sort(arr);
+        int temp = 0, res = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] != arr[i]){
+                temp = i;
+                break;
+            }
+        }
+        for(int i = nums.length - 1; i >= 0; i--){
+            if(nums[i] != arr[i]){
+                res = i - temp + 1;
+                break;
+            }
+        }
+        return res;
+    }
+}
+
+/*
+方法二:
+正序找到逆序数组中的最小值,反序找到逆序数组中的最大值
+然后正序找第一个大于最小值的数即为左边界,反序找第一个小于最大值的数即为右边界
+*/
+
+class Solution {
+    public int findUnsortedSubarray(int[] nums) {
+        boolean flag = false;
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for(int i = 1; i < nums.length; i++){
+            if(nums[i] < nums[i - 1]){
+                min = Math.min(min, nums[i]);
+            }
+        }
+        for(int i = nums.length - 1; i > 0; i--){
+            if(nums[i - 1] > nums[i]){
+                max = Math.max(max, nums[i - 1]);
+            }
+        }
+        int l = nums.length, r = -1;
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] > min){
+                l = i;
+                break;
+            }
+        }
+        for(int i = nums.length - 1; i >= 0; i--){
+            if(nums[i] < max){
+                r = i;
+                break;
+            }
+        }
+        if(r > l){
+            return r - l + 1;
+        }else{
+            return 0;
+        }
+    }
+}
