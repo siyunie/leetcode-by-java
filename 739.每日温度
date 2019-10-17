@@ -1,0 +1,64 @@
+/*
+根据每日 气温 列表，请重新生成一个列表，对应位置的输入是你需要再等待多久温度才会升高超过该日的天数。如果之后都不会升高，请在该位置用 0 来代替。
+
+例如，给定一个列表 temperatures = [73, 74, 75, 71, 69, 72, 76, 73]，你的输出应该是 [1, 1, 4, 2, 1, 1, 0, 0]。
+
+提示：气温 列表长度的范围是 [1, 30000]。每个气温的值的均为华氏度，都是在 [30, 100] 范围内的整数。
+
+*/
+
+/*
+方法一:暴力法
+直接修改气温数组,避免额外内存开销
+*/
+
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+        if(T.length == 0){
+            return T;
+        }else if(T.length == 1){
+            T[0] = 0;
+            return T;
+        }
+        boolean flag = false;
+        for(int i = 0; i < T.length - 1; i++){
+            flag = false;
+            for(int j = i + 1; j < T.length; j++){
+                if(T[j] > T[i]){
+                    T[i] = j - i;
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                T[i] = 0;
+            }
+        }
+        T[T.length - 1] = 0;
+        return T;
+    }
+}
+
+/*
+方法二:动态规划
+从后往前遍历,这样可以用前面数的结果进行跳跃
+当T[i] > T[j]时直接跳跃到之前计算过的第一个大于j的那天再做比较
+*/
+
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+        int[] dp = new int[T.length];
+        for(int i = T.length - 2; i >= 0; i--){
+            for(int j = i + 1; j < T.length; j += dp[j]){
+                if(T[j] > T[i]){
+                    dp[i] = j - i;
+                    break;
+                }else if(dp[j] == 0){
+                    dp[i] = 0;
+                    break;
+                }
+            }
+        }
+        return dp;
+    }
+}
