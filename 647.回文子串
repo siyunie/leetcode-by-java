@@ -1,0 +1,52 @@
+/*
+
+给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
+
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被计为是不同的子串。
+
+示例 1:
+
+输入: "abc"
+输出: 3
+解释: 三个回文子串: "a", "b", "c".
+示例 2:
+
+输入: "aaa"
+输出: 6
+说明: 6个回文子串: "a", "a", "a", "aa", "aa", "aaa".
+注意:
+
+输入的字符串长度不会超过1000。
+
+*/
+
+/*
+方法一:中心扩展法
+对每个字符,分别向两边扩展,看是否相等,相等则结果加一
+即对字符i分别向左i-- 向右i++扩展,判断是否字符相同
+不仅要考虑向左右扩展,还有一种是关于此字符和下一字符中间的间隙对称如 a b c c b a 此情况需要考虑i与i+1 然后向左i-- 向右i+1++扩展
+
+*/
+
+class Solution {
+    int count = 0;
+    public int countSubstrings(String s) {
+        for(int i = 0 ; i < s.length(); i++){
+            isSub(s, i, i);
+            isSub(s, i, i+1);
+        }
+        return count;
+    }
+
+    private void isSub(String s, int left, int right){
+        while(left >= 0 && right < s.length()){
+            if(s.charAt(left) == s.charAt(right)){
+                count++;
+                left--;
+                right++;
+            }else{
+                break;
+            }
+        }
+    }
+}
