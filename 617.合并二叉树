@@ -91,3 +91,30 @@ class Solution {
         return t1;
     }
 }
+
+/*
+方法四:递归
+终止条件:t1与t2同时为Null,直接返回null, t1或t2其中一个为Null,直接返回非null的那个节点
+返回值:值为t1值+t2值的新节点
+本次递归做什么:求出新节点值,并把处理完的左节点接到新节点左边,处理完的右节点接到节点右边
+/*
+
+class Solution {
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if(t1 == null && t2 == null){
+            return null;
+        }    
+        if(t1 == null){
+            return t2;
+        }
+        if(t2 == null){
+            return t1;
+        }
+        TreeNode left = mergeTrees(t1.left, t2.left);
+        TreeNode right = mergeTrees(t1.right, t2.right);
+        TreeNode temp = new TreeNode(t1.val + t2.val);
+        temp.left = left;
+        temp.right = right;
+        return temp;
+    }
+}
