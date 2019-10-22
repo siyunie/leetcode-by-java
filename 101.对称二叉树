@@ -71,3 +71,30 @@ class Solution {
         return true;
     }
 }
+
+
+/*
+方法三:递归
+
+*/
+
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        return helper(root, root);
+    }
+
+    public boolean helper(TreeNode r1, TreeNode r2){
+        if(r1 == null && r2 == null){
+            return true;
+        }
+        if(r1 == null || r2 == null){
+            return false;
+        }
+        if(r1.val != r2.val){
+            return false;
+        }
+        boolean flag1 = helper(r1.left, r2.right);
+        boolean flag2 = helper(r1.right, r2.left);
+        return flag1 && flag2;
+    }
+}
