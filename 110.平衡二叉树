@@ -1,0 +1,70 @@
+/*
+
+给定一个二叉树，判断它是否是高度平衡的二叉树。
+
+本题中，一棵高度平衡二叉树定义为：
+
+一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过1。
+
+示例 1:
+
+给定二叉树 [3,9,20,null,null,15,7]
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回 true 。
+
+示例 2:
+
+给定二叉树 [1,2,2,3,3,null,null,4,4]
+
+       1
+      / \
+     2   2
+    / \
+   3   3
+  / \
+ 4   4
+返回 false 。
+
+*/
+
+/*
+方法一:递归
+递归只用研究当前递归,即root left right之间的操作
+终止条件:节点为null
+返回值:需要满足平衡必须满足 1.left子树平衡 2.right子树平衡 3.left与right高度差小于1 所以重新定义一个Node包含深度与是否平衡信息
+返回Node
+本次递归做什么:判断此节点的左右子树是否平衡且高度差小于1,如满足则返回新的Node节点,平衡且深度为左右子树最大深度+1
+
+*/
+
+class Node{
+    public boolean flag;
+    public int depth;
+    public Node(int depth, boolean flag){
+        this.flag = flag;
+        this.depth = depth;
+    }
+}
+
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return helper(root).flag;
+    }
+
+    public Node helper(TreeNode root){
+        if(root == null){
+            return new Node(0, true);
+        }
+        Node left = helper(root.left);
+        Node right = helper(root.right);
+        if(!left.flag || !right.flag || Math.abs(left.depth - right.depth) > 1){
+            return new Node(0, false);
+        }
+        return new Node(Math.max(left.depth, right.depth) + 1, true);
+    }
+}
