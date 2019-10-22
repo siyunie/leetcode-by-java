@@ -97,3 +97,24 @@ class Solution {
         return root;
     }
 }
+
+
+/*
+方法五:递归
+终止条件:节点为空
+返回值:根节点
+本次递归做什么: 将left接到root的右边 将right接到root的左边
+*/
+
+class Solution {
+    public TreeNode invertTree(TreeNode root) {
+        if(root == null){
+            return null;
+        }
+        TreeNode left = invertTree(root.right);
+        TreeNode right = invertTree(root.left);
+        root.left = left;
+        root.right = right;
+        return root;
+    }
+}
