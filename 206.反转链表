@@ -49,11 +49,12 @@ class Solution {
 }
 
 /*
-方法三：另一种递归
-head.next.next=head,意思是将head的Next节点的下一节点接到head,此时head与head的next节点互相指向对方
-然后把head.next 指向null,断开head节点的指向，完成head和下一节点的反转
-p节点一直为最后一个节点,不会改变,因为p是递归到最后head.next == null时返回的head,并且之后递归回去没有改变过p
-所以p一直是原链表的尾节点,新链表头节点
+方法三:另一种递归
+终止条件:head为空,或者head.next为空
+返回值:因为题目最终要输出新链表的头节点,所以每次递归返回反转后此节点的前节点
+本次递归做什么: 此时链表为 未反转链表->head->已反转链表 本次递归要将其变为 未反转链表->head<-已反转链表
+所以head.next.next = head 然后将head.next = null 避免形成环
+因为返回值为反转后此节点的前节点,所以提前用 p = reverseList(head.next) 保存上次反转的尾节点即此次反转的节点的前节点,然后将其返回
 */
 
 class Solution {
