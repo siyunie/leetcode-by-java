@@ -1,0 +1,62 @@
+/*
+
+给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。
+
+k 是一个正整数，它的值小于或等于链表的长度。
+
+如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+
+示例 :
+
+给定这个链表：1->2->3->4->5
+
+当 k = 2 时，应当返回: 2->1->4->3->5
+
+当 k = 3 时，应当返回: 3->2->1->4->5
+
+说明 :
+
+你的算法只能使用常数的额外空间。
+你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+*/
+
+/*
+方法一:双循环
+计算长度,循环len/k次 在每次循环嵌套另一层循环,嵌套的循环目的是反转这k个节点,具体做如下操作
+cur为这k个节点未反转前的头节点 pre未这k节点未反转前的头节点的前一节点 如null->1->2->3->4 k=3 pre为null head为1
+cur与pre在此次嵌套循环中保持不变
+每次做将cur的后一节点移到pre节点的下一节点 如嵌套循环第一次反转对2进行操作  反转之后为 null->2->1->3->4 此时pre仍未null head仍为1
+第二次反转对3进行操作反转之后为 null->3->2->1->4 此时对于k=3的情况反转结束
+所以对于每次反转k个节点的嵌套循环需要做k-1次才能k个节点完全反转
+反转完此k节点之后对pre赋值为反转结束的k节点的尾节点,cur赋值为此尾节点的下一节点,即下k个节点的头节点,继续进行外层循环,对下k个节点进行翻转
+
+对于len%k的剩下节点按照题意毋须改变
+
+
+*/
+
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode temp = new ListNode(0);
+        temp.next = head;
+        ListNode pre = temp;
+        ListNode cur = head;
+        int len = 0;
+        while(head != null){
+            head = head.next;
+            len++;
+        }
+        for(int i = 0; i < len/k; i++){
+            for(int j = 0; j < k - 1; j++){
+                ListNode next = cur.next;
+                cur.next = cur.next.next;
+                next.next = pre.next;
+                pre.next = next;
+            }
+            pre = cur;
+            cur = pre.next;
+        }
+        return temp.next;
+    }
+}
