@@ -19,8 +19,8 @@
 
 /*
 方法一:回溯+剪枝
-剪枝residual >= candidates[i]放在for(;;)中剪枝效率更高
-比放在for循环循环体第一行 if(residual < candidates[i]) break; 效率高
+剪枝residual >= candidates[i]放在for(;;)中
+
 
 */
 
@@ -42,6 +42,40 @@ class Solution {
             return;
         }
         for(int i = index; i < candidates.length && residual >= candidates[i]; i++){
+            stack.push(candidates[i]);
+            helper(k - 1, residual - candidates[i], i + 1, candidates);
+            stack.pop();
+        }
+    }
+}
+
+
+/*
+方法二:回溯+剪枝
+剪枝放在for循环体中if(residual < candidates[i]) break
+
+*/
+
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    Stack<Integer> stack = new Stack<>();
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        int[] candidates = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        helper(k, n, 0, candidates);
+        return res;
+    }
+
+    private void helper(int k, int residual, int index, int[] candidates){
+        if(k == 0 && residual == 0){
+            res.add(new ArrayList<>(stack));
+        }
+        if(k == 0 || residual == 0){
+            return;
+        }
+        for(int i = index; i < candidates.length; i++){
+            if(residual < candidates[i]){
+                break;
+            }
             stack.push(candidates[i]);
             helper(k - 1, residual - candidates[i], i + 1, candidates);
             stack.pop();
