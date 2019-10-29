@@ -1,0 +1,63 @@
+/*
+报数序列是一个整数序列，按照其中的整数的顺序进行报数，得到下一个数。其前五项如下：
+
+1.     1
+2.     11
+3.     21
+4.     1211
+5.     111221
+1 被读作  "one 1"  ("一个一") , 即 11。
+11 被读作 "two 1s" ("两个一"）, 即 21。
+21 被读作 "one 2",  "one 1" （"一个二" ,  "一个一") , 即 1211。
+
+给定一个正整数 n（1 ≤ n ≤ 30），输出报数序列的第 n 项。
+
+注意：整数顺序将表示为一个字符串。
+
+ 
+
+示例 1:
+
+输入: 1
+输出: "1"
+示例 2:
+
+输入: 4
+输出: "1211"
+
+*/
+
+
+/*
+方法一:遍历循环+双指针
+遍历n
+维持双指针,i指向新的数,移动j直到双指针指的字符不同,此时将新字符串加到每次n新建的StringBuilder之后,更新i和i对应字符
+每一轮遍历完成 将新建的StringBuilder更新之前的StringBuilder n--继续循环
+
+*/
+
+
+class Solution {
+    public String countAndSay(int n) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(1);
+        n--;
+        while (n > 0) {
+            StringBuilder sbTemp = new StringBuilder();
+            for (int i = 0, len = sb.length(); i < len;) {
+                int j = i;
+                int count = 0;
+                while (j < len && sb.charAt(j) == sb.charAt(i)) {
+                    j++;
+                    count++;
+                }
+                sbTemp.append(count).append(sb.charAt(i));
+                i = j;
+            }
+            n--;
+            sb = sbTemp;
+        }
+        
+        return sb.toString();
+    }
+}
