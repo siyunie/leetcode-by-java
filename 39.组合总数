@@ -85,3 +85,31 @@ class Solution {
         }
     }
 }
+
+/*
+方法三:回溯剪枝另一种写法
+
+*/
+
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates);
+        helper(candidates, target, 0, res, new Stack<Integer>());
+        return res;
+    }
+
+    public void helper(int[] candidates, int residual, int index, List<List<Integer>> res, Stack<Integer> stack){
+        if(residual == 0){
+            res.add(new ArrayList<>(stack));
+        }
+        for(int i = index; i < candidates.length; i++){
+            if(residual < candidates[i]){
+                break;
+            }
+            stack.push(candidates[i]);
+            helper(candidates, residual - candidates[i], i, res, stack);
+            stack.pop();
+        }
+    }
+}
