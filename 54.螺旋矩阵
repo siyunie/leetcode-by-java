@@ -1,0 +1,85 @@
+/*
+
+给定一个包含 m x n 个元素的矩阵（m 行, n 列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。
+
+示例 1:
+
+输入:
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+输出: [1,2,3,6,9,8,7,4,5]
+示例 2:
+
+输入:
+[
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9,10,11,12]
+]
+输出: [1,2,3,4,8,12,11,10,9,5,6,7]
+
+*/
+
+/*
+方法一:用right up left down来保存每个方向要前进的步数,每转一圈重置步数,每转一圈各个方向能走的步数-2
+所以 right = col - 1 - 2*round;
+    down = row - 1 - 2*round;
+     left = col - 1 -2*round;
+     up = row - 2 - 2*round;
+     
+注意up 为 -2 因为最上一层已经走过
+
+同时用total保存总步数,当total == row*col时代表走完了 终止循环
+必须要如此判断,因为循环默认的是每次结束是一整圈走完,但是不一定是正方形矩阵所以可能最后一圈还未走完就结束了,即最后一圈不是整圈
+如果不用total判断,最后一圈会有额外数字被重复输出
+
+*/
+
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new ArrayList<>();
+        int row = matrix.length;
+        if(row == 0){
+            return res;
+        }
+        int col = matrix[0].length;
+
+        int total = 0;
+        int round = 0;
+        int right = col - 1 - 2*round;
+        int down = row - 1 - 2*round;
+        int left = col - 1 -2*round;
+        int up = row - 2 - 2*round;
+
+
+        int i = 0, j = 0;
+        while(total < row*col){
+            res.add(matrix[i][j]);
+            if(right > 0){
+                right--;
+                j++;
+            }else if(down > 0){
+                down--;
+                i++;
+            }else if(left > 0){
+                left--;
+                j--;
+            }else if(up > 0){
+                up--;
+                i--;
+                if(up == 0){
+                    round++;
+                    right = col - 2*round;
+                    down = row - 1 - 2*round;
+                    left = col - 1 -2*round;
+                    up = row - 2 - 2*round;
+                }
+            }
+            total++;
+        }
+        return res;
+    }
+}
