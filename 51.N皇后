@@ -1,0 +1,86 @@
+/*
+
+n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
+给定一个整数 n，返回所有不同的 n 皇后问题的解决方案。
+
+每一种解法包含一个明确的 n 皇后问题的棋子放置方案，该方案中 'Q' 和 '.' 分别代表了皇后和空位。
+
+示例:
+
+输入: 4
+输出: [
+ [".Q..",  // 解法 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // 解法 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+解释: 4 皇后问题存在两个不同的解法。
+
+*/
+
+/*
+方法一:递归
+
+result[i] = j 意思是row = i 的皇后在j列上
+
+一行一行放,到第i行时,依次试所有列,检查所有列中的此行之前已经放好的皇后是否冲突,即检查0~i-1行放过的皇后
+检查方法 因为是一行一行放所以不用检查行, 检查列通过result[i] == result[0~i-1] 
+检查对角线 因为和对角线构成等腰直角三角形  Math.abs(result[i] - result[0~i-1]) == i - 0~i-1
+
+*/
+
+class Solution {
+    List<List<String>> res = new ArrayList<>();
+    public List<List<String>> solveNQueens(int n) {
+        int[] result = new int[n];
+        dfs(result, 0 , n);
+        return res;
+    }
+
+    private void dfs(int[] result, int row, int n){
+        if(row == n){
+            getResult(result, n);
+            return; 
+        }
+
+        for(int col = 0; col < n; col++){
+            result[row] = col;
+            boolean flag = false;
+            for(int i = row - 1; i >= 0; i--){
+                if(result[i] == col || (row - i) == Math.abs(col - result[i])){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                dfs(result, row + 1, n);
+            }
+            //result[row] = n;
+            //此处不用重置也是对的,因为这种写法,回溯之后,保存状态的是下一行的皇后位置,即result[row + 1]的值,回溯之后,虽然值没有被重置回去
+            //但是,因为每次检查判断是否不冲突是检查row-1 ~ 0 即此行的前所有行是否有冲突,因此无影响,所以这种写法不用重置
+        }
+    }
+
+    private void getResult(int[] result, int n){
+        List<String> tempRes = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            StringBuilder str = new StringBuilder();
+            for(int j = 0; j < n; j++){
+                if(result[i] == j){
+                    str.append("Q");
+                }else{
+                    str.append(".");
+                }
+            }
+            tempRes.add(str.toString());
+        }
+        res.add(tempRes);
+    }
+}
+
+
