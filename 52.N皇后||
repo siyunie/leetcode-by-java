@@ -1,0 +1,62 @@
+/*
+
+n 皇后问题研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
+
+给定一个整数 n，返回 n 皇后不同的解决方案的数量。
+
+示例:
+
+输入: 4
+输出: 2
+解释: 4 皇后问题存在如下两个不同的解法。
+[
+ [".Q..",  // 解法 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // 解法 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+
+*/
+
+
+/*
+方法一:递归
+与N皇后问题一样,只是不用保存结果,直接保存个数
+
+*/
+
+class Solution {
+    int count = 0;
+    public int totalNQueens(int n) {
+        int[] res = new int[n];
+        dfs(res, 0, n);
+        return count;
+    }
+
+    private void dfs(int[] res, int row, int n){
+        if(row == n){
+            count++;
+            return;
+        }
+
+        for(int col = 0; col < n; col++){
+            res[row] = col;
+            boolean flag = false;
+            for(int i = row - 1; i >= 0; i--){
+                if(res[i] == col || (row - i) == Math.abs(col - res[i])){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                dfs(res, row + 1, n);
+            }
+        }
+    }
+}
+
