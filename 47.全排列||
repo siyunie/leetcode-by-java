@@ -1,0 +1,50 @@
+/*
+给定一个可包含重复数字的序列，返回所有不重复的全排列。
+
+示例:
+
+输入: [1,1,2]
+输出:
+[
+  [1,1,2],
+  [1,2,1],
+  [2,1,1]
+]
+
+*/
+
+/*
+方法一:回溯法+剪枝
+为了去重,先将nums排序为升序,然后当当前数与前一个数相等,且前一个数已经用过时,剪枝,即continue,跳过当前数
+
+*/
+
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    Stack<Integer> stack = new Stack<Integer>();
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        traceback(nums, used, 0);
+        return res;
+    }
+
+    public void traceback(int[] nums, boolean[] used, int index){
+        if(index == nums.length){
+            res.add(new ArrayList<>(stack));
+            return;
+        }
+        for(int i = 0; i < nums.length; i++){
+            if(!used[i]){
+                if(i > 0 && nums[i] == nums[i - 1] && used[i - 1]){
+                    continue;
+                }
+                stack.push(nums[i]);
+                used[i] = true;
+                traceback(nums, used, index + 1);
+                used[i] = false;
+                stack.pop();
+            }
+        }
+    }
+}
