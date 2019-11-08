@@ -1,0 +1,106 @@
+
+/*
+
+给出集合 [1,2,3,…,n]，其所有元素共有 n! 种排列。
+
+按大小顺序列出所有排列情况，并一一标记，当 n = 3 时, 所有排列如下：
+
+"123"
+"132"
+"213"
+"231"
+"312"
+"321"
+给定 n 和 k，返回第 k 个排列。
+
+说明：
+
+给定 n 的范围是 [1, 9]。
+给定 k 的范围是[1,  n!]。
+示例 1:
+
+输入: n = 3, k = 3
+输出: "213"
+示例 2:
+
+输入: n = 4, k = 9
+输出: "2314"
+
+*/
+
+/*
+方法一:回溯+剪枝
+说是回溯法,其实没有回溯过程,只是用used数组保持取过的值
+因为排列有规律,所以不需要每个都计算,只用算出每个支路有多少种结果,然后判断此条指路全部走完能否达到K,不行则直接进入下一条支路
+所以每一次添加进res的数,一定为结果
+
+比如n = 4, k = 10
+首先对1为一个数字的情况开始排 后面234排列组合 一共3!种 一定取不到结果 k=k-3!
+所以进入2为首的情况 后面134排列组合 一共3!种 此时k=4 < 3! 所以结果一定再此支路内, 将2添加到res中,depth+1,used[i]置为取过,继续循环,直到取到所有数
+注意当进入2为首的支路的情况时 比如 2,1 后面 3,4排列组合 一共为2!种 即计算n-1-depth的阶乘为此支路的总个数
+
+此处注意每次循环时
+      for(int i = 0; i < n; i++){
+            if(used[i]){
+                continue;
+            }
+            if(index < k){
+                k -= index;
+                continue;
+            }
+一定要先判断是否取过,如果取过直接跳过,然后再算index是否小于k值
+因为之前数定了之后,如果先判断index与k的关系,可能continue跳过的是无效值,即跳过了之前取过的值,本来就不可能被取到的值
+所以一定要先判断数是否已经用过了
+
+*/
+
+
+
+class Solution {
+    List<String> res = new ArrayList<>();
+    public String getPermutation(int n, int k) {
+        int depth = 0;
+        int[] nums = new int[n];
+        for(int i = 0; i < n; i++){
+            nums[i] = i + 1;
+        }
+        boolean[] used = new boolean[n];
+        traceback(n, k, nums, 0, used); 
+        StringBuilder str = new StringBuilder();
+        for(String s: res){
+            str.append(s);
+        }
+            
+        return str.toString();
+
+    }
+
+    private void traceback(int n, int k, int[] nums, int depth, boolean[] used){
+        if(depth == n){
+            return;
+        }
+
+        int index = calculateDepth(n - 1 - depth);
+
+        for(int i = 0; i < n; i++){
+            if(used[i]){
+                continue;
+            }
+            if(index < k){
+                k -= index;
+                continue;
+            }
+            res.add(String.valueOf(nums[i]));
+            used[i] = true;
+            traceback(n, k, nums, depth + 1, used);
+        }  
+    }
+
+    private int calculateDepth(int n){
+        int temp = 1;
+        for(int i = n; i > 0; i--){
+            temp *= i;
+        }
+        return temp;
+    }
+}
