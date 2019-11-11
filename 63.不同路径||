@@ -1,0 +1,106 @@
+/*
+
+一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。
+
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。
+
+现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+
+网格中的障碍物和空位置分别用 1 和 0 来表示。
+
+说明：m 和 n 的值均不超过 100。
+
+示例 1:
+
+输入:
+[
+  [0,0,0],
+  [0,1,0],
+  [0,0,0]
+]
+输出: 2
+解释:
+3x3 网格的正中间有一个障碍物。
+从左上角到右下角一共有 2 条不同的路径：
+1. 向右 -> 向右 -> 向下 -> 向下
+2. 向下 -> 向下 -> 向右 -> 向右
+
+
+*/
+
+/*
+方法一:动态规划
+第一反应回溯法,但是发现不需要具体路径,且没想清楚回溯法怎么表示向下或者向右走?
+然后考虑动态规划
+直接操作原数组,将其当作dp数组
+数组obstacleGrid[i][j]表示到当前位置一共有多少种情况
+当数组的起始点和终点有障碍,即为1时,直接返回0
+否则初始化起点值为1
+对第一行和第一列,因为机器人只能向下或向右走,所以对第一行,只能由起点向右走得到,对第一列,只能由起点向下走得到
+初始化第一行,当碰到当前值为0,即无障碍时,将其置为1,表示有一种方法可以到达,当碰到障碍时,后面全部不可达,置为0
+所以判断当此处值为0 (无障碍)且前点值为1 (能达到前一个点)才将其置为1 否则置0
+同理初始化第一列
+
+对数组循环时,当此处值为1,即有障碍,将其置为0,表示不可达,否则当前值=左边值+上边值
+即obstacleGrid[i][j] = obstacleGrid[i - 1][j] + obstacleGrid[i][j - 1]
+表示当前可以由上面向下走或者左边向右走得到
+
+*/
+
+
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if(obstacleGrid[0][0] == 1 || obstacleGrid[obstacleGrid.length - 1][obstacleGrid[0].length - 1] == 1){
+            return 0;
+        }
+        obstacleGrid[0][0] = 1;
+        for(int i = 1; i < obstacleGrid.length; i++){
+            obstacleGrid[i][0] = (obstacleGrid[i][0] == 0 && obstacleGrid[i - 1][0] == 1) ? 1 : 0;
+        }
+        for(int j = 1; j < obstacleGrid[0].length; j++){
+            obstacleGrid[0][j] = (obstacleGrid[0][j] == 0 && obstacleGrid[0][j - 1] == 1)? 1 : 0;
+        }
+        for(int i = 1; i < obstacleGrid.length; i++){
+            for(int j = 1; j < obstacleGrid[0].length; j++){
+                if(obstacleGrid[i][j] == 0){
+                    obstacleGrid[i][j] = obstacleGrid[i - 1][j] + obstacleGrid[i][j - 1];
+                }else{
+                    obstacleGrid[i][j] = 0;
+                }
+            }
+        }
+        return obstacleGrid[obstacleGrid.length - 1][obstacleGrid[0].length - 1];
+    }
+}
+
+/*
+后来考虑回溯怎么写,发现回溯不用重置状态,因为不会修改数组的值,只用判断下一个能不能到,能到则移动,是一个不断递归返回的过程
+但是时间复杂度太高,时间超出限制未通过
+代码如下
+
+
+class Solution {
+    int count;
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if(obstacleGrid[0][0] == 1){
+            return 0;
+        }
+        dfs(obstacleGrid, 0, 0);
+        return count;
+    }
+    
+    public void dfs(int[][] obstacleGrid, int i, int j){
+        if(i == obstacleGrid.length - 1 && j == obstacleGrid[0].length - 1){
+            count++;
+            return;
+        }
+        if(i < obstacleGrid.length - 1 && obstacleGrid[i + 1][j] == 0){
+            dfs(obstacleGrid, i + 1, j);
+        }
+        if(j < obstacleGrid[0].length - 1 && obstacleGrid[i][j + 1] == 0){
+            dfs(obstacleGrid, i, j + 1);
+        }
+    }
+}
+
+*/
