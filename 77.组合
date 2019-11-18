@@ -58,6 +58,9 @@ class Solution {
 if(n - i + 1 < residual){
    return;
 }
+或将此过程写在for循环开头,效率更高
+for(int i = startIndex; i <= n + 1 - residual; i++)
+
 通过此过程剪枝
 
 */
@@ -88,6 +91,37 @@ class Solution {
             if(n - i + 1 < residual){
                 return;
             }
+        }
+    }
+}
+
+/*
+剪枝过程写在for循环开头,效率更高
+
+*/
+
+class Solution {
+
+    Stack<Integer> stack = new Stack<>();
+    List<List<Integer>> list = new ArrayList<>();
+    public List<List<Integer>> combine(int n, int k) {
+        traceback(n, k, 1);
+        return list;
+    }
+
+    public void traceback(int n, int residual, int startIndex){
+        if(residual == 0){
+            list.add(new ArrayList(stack));
+            return;
+        }
+        if(startIndex > n){
+            return;
+        }
+
+        for(int i = startIndex; i <= n + 1 - residual; i++){
+            stack.push(i);
+            traceback(n, residual - 1, i + 1);
+            stack.pop();
         }
     }
 }
