@@ -1,0 +1,93 @@
+/*
+
+给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
+
+示例:
+
+输入: n = 4, k = 2
+输出:
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+
+*/
+
+
+/*
+方法一:回溯法
+注意此处为 traceback(n, residual - 1, i + 1) 不要写成traceback(n, residual - 1, startIndex + 1) 
+因为每次再取是当前数开始的 不要混淆搞错, 容易写成traceback(n, residual - 1, startIndex + 1)
+
+*/
+
+class Solution {
+
+    Stack<Integer> stack = new Stack<>();
+    List<List<Integer>> list = new ArrayList<>();
+    public List<List<Integer>> combine(int n, int k) {
+        traceback(n, k, 1);
+        return list;
+    }
+
+    public void traceback(int n, int residual, int startIndex){
+        if(residual == 0){
+            list.add(new ArrayList(stack));
+            return;
+        }
+        if(startIndex > n){
+            return;
+        }
+
+        for(int i = startIndex; i <= n; i++){
+            stack.push(i);
+            traceback(n, residual - 1, i + 1);
+            stack.pop();
+        }
+    }
+}
+
+
+/*
+方法二:回溯法+剪枝
+当每轮循环pop之后判断剩余数的个数必须大于等于还需要取的数的个数,即
+if(n - i + 1 < residual){
+   return;
+}
+通过此过程剪枝
+
+*/
+
+
+class Solution {
+
+    Stack<Integer> stack = new Stack<>();
+    List<List<Integer>> list = new ArrayList<>();
+    public List<List<Integer>> combine(int n, int k) {
+        traceback(n, k, 1);
+        return list;
+    }
+
+    public void traceback(int n, int residual, int startIndex){
+        if(residual == 0){
+            list.add(new ArrayList(stack));
+            return;
+        }
+        if(startIndex > n){
+            return;
+        }
+
+        for(int i = startIndex; i <= n; i++){
+            stack.push(i);
+            traceback(n, residual - 1, i + 1);
+            stack.pop();
+            if(n - i + 1 < residual){
+                return;
+            }
+        }
+    }
+}
