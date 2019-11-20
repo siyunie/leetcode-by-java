@@ -1,0 +1,41 @@
+/*
+
+给定一个排序链表，删除所有含有重复数字的节点，只保留原始链表中 没有重复出现 的数字。
+
+示例 1:
+
+输入: 1->2->3->3->4->4->5
+输出: 1->2->5
+示例 2:
+
+输入: 1->1->1->2->3
+输出: 2->3
+
+*/
+
+/*
+方法一:递归
+1.什么时候返回: 当 当前节点为空时
+2.本次递归做什么: 如果 此节点值和下节点相同,找到下一个不同节点,将下一个不同的节点经递归处理后的返回节点返回
+否则 将此节点的下一节点 指向 经递归处理此节点的原下一节点 返回的节点 
+3.递归返回什么: 头节点
+
+*/
+
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null){
+            return head;
+        }
+        ListNode next = head.next;
+        if(next != null && head.val == next.val){
+            while(next != null && head.val == next.val){
+                next = next.next;
+            }
+            head = deleteDuplicates(next);
+        }else{
+            head.next = deleteDuplicates(next);
+        }
+        return head;
+    }
+}
