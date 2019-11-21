@@ -1,0 +1,48 @@
+/*
+给定一个链表和一个特定值 x，对链表进行分隔，使得所有小于 x 的节点都在大于或等于 x 的节点之前。
+
+你应当保留两个分区中每个节点的初始相对位置。
+
+示例:
+
+输入: head = 1->4->3->2->5->2, x = 3
+输出: 1->2->2->4->3->5
+
+*/
+
+
+/*
+方法一:双指针
+类似于双链表,考虑到结果可以看成从某一节点断开的两个新链表,前部分为所有小于x的值,后部分为剩余,且相对位置不变
+所以考虑使用双哑指针,一个存小于x的数,一个存大于等于x的数,依次遍历这样能保证相对位置不变
+此时看似是双链表,其实是在原链表上直接改变,除了双哑指针之外未使用额外空间,空间复杂度为O(1)
+
+注意 在结束遍历,拼接两链表之前 一定要将后部分链表的尾节点的下一节点置为null,即after.next = null不然会超出内存限制
+因为比如1->4->3->2->5->2 经过遍历后变为 before_head->1->2->2  after_head->4->3->5---->2 注意此时5 指向before链表的结尾
+即before链表结尾的2被本身链表的前一节点2和after节点的尾节点5同时指向 如果直接将2拼接到after链表表头,会形成环形链表,超出内存限制
+所以一定要将after尾节点5置为null,断开与后面可能连接的小于x的数,避免形成环形链表
+
+*/
+
+class Solution {
+    public ListNode partition(ListNode head, int x) {
+        ListNode after_head = new ListNode(0);
+        ListNode before_head = new ListNode(0);
+        ListNode after = after_head;
+        ListNode before = before_head;
+
+        while(head != null){
+            if(head.val < x){
+                before.next = head;
+                before = before.next;
+            }else{
+                after.next = head;
+                after = after.next;
+            }
+            head = head.next;
+        }
+        after.next = null;
+        before.next = after_head.next;
+        return before_head.next;
+    }
+}
