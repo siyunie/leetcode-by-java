@@ -1,0 +1,55 @@
+/*
+
+给定两个有序整数数组 nums1 和 nums2，将 nums2 合并到 nums1 中，使得 num1 成为一个有序数组。
+
+说明:
+
+初始化 nums1 和 nums2 的元素数量分别为 m 和 n。
+你可以假设 nums1 有足够的空间（空间大小大于或等于 m + n）来保存 nums2 中的元素。
+示例:
+
+输入:
+nums1 = [1,2,3,0,0,0], m = 3
+nums2 = [2,5,6],       n = 3
+
+输出: [1,2,2,3,5,6]
+
+*/
+
+/*
+方法一:先合并再排序
+
+*/
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        for(int num: nums2){
+            nums1[m] = num;
+            m++;
+        }
+        Arrays.sort(nums1);
+        return;
+    }
+}
+
+
+/*
+方法二:排序数组,数组都有序,想到可以用双指针,分别指向两个数组头,依次比较,移动指针,但是题目要求合并到nums1中
+这样需要一个额外数组先来存nums1的值
+考虑怎么才能避免使用额外空间,使用双指针指向两个数组有值的末尾,即nums2尾和nums1的有非0值的末尾,然后依次从nums1尾部放入,就可以避免使用额外空间
+
+*/
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int p1 = m - 1;
+        int p2 = n - 1;
+        int p = m + n - 1;
+        while(p1 >= 0 && p2 >= 0){
+            nums1[p--] = (nums1[p1] > nums2[p2]) ? nums1[p1--] : nums2[p2--];
+        }
+        if(p2 >= 0){
+            System.arraycopy(nums2, 0, nums1, 0, p2 + 1);
+        }
+    }
+}
