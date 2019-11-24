@@ -1,0 +1,45 @@
+/*
+给定一个可能包含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
+
+说明：解集不能包含重复的子集。
+
+示例:
+
+输入: [1,2,2]
+输出:
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+
+*/
+方法一:回溯法
+因为可能有重复元素所以判断if(i > index && nums[i] == nums[i - 1])时跳过此次回溯操作
+注意此时每次开头都添加一次结果到res中,因为每个结果都是结果集中需要结果,而不用等index == nums.length()时再添加结果
+
+/*
+
+class Solution {
+     List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        backtrack(nums, 0, new Stack<Integer>());
+        return res;
+    }
+
+    public void backtrack(int[] nums, int index, Stack<Integer> stack){
+        res.add(new ArrayList<>(stack));
+        for(int i = index; i < nums.length; i++){
+            if(i > index && nums[i] == nums[i - 1]){
+                continue;
+            }
+            stack.push(nums[i]);
+            backtrack(nums, i + 1, stack);
+            stack.pop();
+        }
+    }
+}
