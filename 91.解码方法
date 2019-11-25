@@ -1,0 +1,96 @@
+/*
+
+一条包含字母 A-Z 的消息通过以下方式进行了编码：
+
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+给定一个只包含数字的非空字符串，请计算解码方法的总数。
+
+示例 1:
+
+输入: "12"
+输出: 2
+解释: 它可以解码为 "AB"（1 2）或者 "L"（12）。
+示例 2:
+
+输入: "226"
+输出: 3
+解释: 它可以解码为 "BZ" (2 26), "VF" (22 6), 或者 "BBF" (2 2 6) 。
+
+*/
+
+
+/*
+方法一:递归
+因为能节码的数范围为1-26,所以递归将其分为两种情况,下一次解码剩余字符串第一位,或者下次解码剩余字符串前两位,即将前两位看成一个数,此时要保证数小于26
+注意0不为任何可以解码的数,所以如果当前位为0,直接返回0
+1.递归什么时候返回:所有字符串解码完毕,即index == s.length(),返回1, 或者碰到0时,说明此种解码不可能,直接返回0
+2.本次递归做什么,判断有没有可能后面两位为一位密码,可能的话,将其记为helper2,不可能的话helper2 = 0, 同时helper1保存后面一位为一位密码的情况
+3.递归返回什么:所有可能的解码个数,即如果helper1+helper2
+
+*/
+
+class Solution {
+    public int numDecodings(String s) {
+        return helper(s, 0);
+    }
+
+    public int helper(String s, int index){
+        if(index == s.length()){
+            return 1;
+        }
+        if(s.charAt(index) == '0'){
+            return 0;
+        }
+        int helper1 = helper(s, index + 1);
+        int helper2 = 0;
+        if(index + 1 < s.length()){
+            int first = (s.charAt(index) - '0')*10;
+            int second = s.charAt(index + 1) - '0';
+            if(first + second <= 26){
+                helper2 = helper(s, index + 2);
+            }
+        }
+        return helper1 + helper2;
+    }
+}
+
+
+/*
+
+方法二:考虑到方法一会重复计算,比如2233344 分割为2 233344 和 22 33344 后 233344 又会分割为2 33344(与之前重复情况) 和 23 3344
+所以用一个hash保存当前索引的解码个数,再return helper1+helper2之前将其加入hash中,并在一开始判断以前是否保留过此情况
+若有则直接返回结果
+
+*/
+
+class Solution {
+    public int numDecodings(String s) {
+        return helper(s, 0, new HashMap<Integer, Integer>());
+    }
+
+    public int helper(String s, int index, HashMap<Integer, Integer> hash){
+        if(index == s.length()){
+            return 1;
+        }
+        if(s.charAt(index) == '0'){
+            return 0;
+        }
+        if(hash.containsKey(index)){
+            return hash.get(index);
+        }
+        int helper1 = helper(s, index + 1, hash);
+        int helper2 = 0;
+        if(index + 1 < s.length()){
+            int first = (s.charAt(index) - '0')*10;
+            int second = s.charAt(index + 1) - '0';
+            if(first + second <= 26){
+                helper2 = helper(s, index + 2, hash);
+            }
+        }
+        hash.put(index, helper1 + helper2);
+        return helper1 + helper2;
+    }
+}
