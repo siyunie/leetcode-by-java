@@ -1,0 +1,45 @@
+/*
+
+反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
+
+说明:
+1 ≤ m ≤ n ≤ 链表长度。
+
+示例:
+
+输入: 1->2->3->4->5->NULL, m = 2, n = 4
+输出: 1->4->3->2->5->NULL
+
+*/
+方法一:迭代
+使用pre保存开始反转的位置 如 1 -> 2 -> 3 -> 4 -> 5 -> null 的 1
+循环反转操作 将当前节点即head节点的下一节点放到pre后面
+1 -> 2 -> 3 -> 4 -> 5 -> null   pre为1 head为2
+1 -> 3 -> 2 -> 4 -> 5 -> null   pre为1 head为2
+1 -> 4 -> 3 -> 2 -> 5 -> null   pre为1 head为2  此时已经到了n位置,结束反转
+完成反转
+注意为了防止 m==1的情况, 即m为头节点, 使用哑节点作为头节点的前一节点进行操作
+
+/*
+
+class Solution {
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        ListNode dumb = new ListNode(0);
+        dumb.next = head;
+        ListNode pre = dumb;
+        while(m > 1){
+            pre = pre.next;
+            head = head.next;
+            m--;
+            n--;
+        }
+        while(n > 1){
+            ListNode next = head.next;
+            head.next = next.next;
+            next.next = pre.next;
+            pre.next = next;
+            n--;
+        }
+        return dumb.next;
+    }
+}
