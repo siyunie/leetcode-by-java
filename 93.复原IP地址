@@ -1,0 +1,48 @@
+/*
+给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
+
+示例:
+
+输入: "25525511135"
+输出: ["255.255.11.135", "255.255.111.35"]
+
+*/
+
+
+/*
+方法一:暴力法
+注意此时helper判断是否合法时,一定要加上s.length() > 3时判断false, 因为temp4为k + 1开始到整个字符串结束,有可能长度会大于3
+当大于3时,进行Integer.parseInt(s)可能会超过int型最大取值 2的31次方-1 报错NumberFormatException
+比如原始字符串为0279245587303 将其分为0.2.7.9245587303 此处 9245587303 > 2的31次方-1 
+此时如果不先判断temp4的长度是否大于三,直接传入Integer.parseInt(9245587303) 会报错
+
+*/
+
+class Solution {
+    public List<String> restoreIpAddresses(String s) {
+        List<String> res = new ArrayList<>();
+        for(int i = 0; i < 3; i++){
+            for(int j = i + 1; j < i + 4; j++){
+                for(int k = j + 1; k < j + 4; k++){
+                    if(i < s.length() && j < s.length() &&k < s.length()){
+                        String temp1 = s.substring(0, i + 1);
+                        String temp2 = s.substring(i + 1, j + 1);
+                        String temp3 = s.substring(j + 1, k + 1);
+                        String temp4 = s.substring(k + 1);
+                        if(helper(temp1) && helper(temp2) && helper(temp3) && helper(temp4)){
+                            res.add(new StringBuffer().append(temp1).append(".").append(temp2).append(".").append(temp3).append(".").append(temp4).toString());
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    public boolean helper(String s){
+        if(s == null || s.length() == 0 || (s.charAt(0) == '0' && s.length() != 1) || s.length() > 3 || Integer.parseInt(s) > 255){
+            return false;
+        }
+        return true;
+    }
+}
