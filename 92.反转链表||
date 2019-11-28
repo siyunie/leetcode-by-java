@@ -43,3 +43,42 @@ class Solution {
         return dumb.next;
     }
 }
+
+
+/*
+方法二:递归
+tail节点为反转后的部分的尾节点应该接到的节点 即1 -> 2 -> 3 -> 4 -> 5 -> null 里的 5
+last节点为反转后部分的头节点 即 4
+当n == 1时 遍历到了尽头,即4处,此时将tail节点赋值为head.next 即tail 为5
+然后递归return 依次执行(因为n == 1时 m一定早就为1)            
+            ListNode last = reverseBetween(head.next, 1, n -1);
+            head.next.next = head;
+            head.next = tail;
+            return last;
+            假设此处处理节点为3    head 为 2 
+            即 1 -> 2 -> 3 <- 4  5 -> null 变为 1 -> 2 <- 3 <- 4  5 -> null
+            完成此部分反转  这样就不用每次返回需要递归点的节点 而是可以直接通过当前节点 即 head节点操作即可完成本次递归操作
+            因此可以返回反转后的头节点 即 4  这样最终反转后的头节点 4 与 最终反转后的尾节点的下一节点 5 都能拿到
+            这样就能保证所有反转后的部分最终能接到最终结果的链表之间 即 完成反转后的部分 4 -> 3 -> 2 接到 1 -> 与 5 -> null 之间
+
+ 
+当m != 1时 head.next = reverseBetween(head.next, m - 1, n - 1) 找到第一个需要反转的位置
+
+*/
+
+class Solution {
+    ListNode tail = null;
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if(n == 1){
+            tail = head.next;
+        }else if(m == 1){
+            ListNode last = reverseBetween(head.next, 1, n -1);
+            head.next.next = head;
+            head.next = tail;
+            return last;
+        }else{
+            head.next = reverseBetween(head.next, m - 1, n - 1);
+        }
+        return head;
+    }
+}
