@@ -46,3 +46,55 @@ class Solution {
         return true;
     }
 }
+
+
+
+/*
+
+方法二:回溯法
+标准回溯法
+注意使用count保存 用.分割的个数,count < 0时说明已经分割成了多于4份,需要返回
+当index == s.length() && count == 0 说明所有字符串分割完,且正好为4分 将其添加到结果中,返回
+每次对StringBuilder进行append和delete操作 避免使用String不断产生新的字符串
+注意 每次回溯之前 temp都append了".",即最后一位为".", 所以每次状态重置时,temp要多删一位
+
+在回溯过程中需判断 i == index && s.charAt(i) == '0' 时 说明再此分割的第一个字符为0,必须为单独字符,不然不符合规则
+所以当这种情况返回时, 重置temp状态之后, 直接break 因为只有此情况的子情况才能符合要求
+
+*/
+
+
+
+
+
+class Solution {
+    List<String> res = new ArrayList<>();
+    public List<String> restoreIpAddresses(String s) {
+        backtrack(s, 0, new StringBuilder(), 4);
+        return res;
+    }
+
+    public void backtrack(String s, int index, StringBuilder temp, int count){
+        if(index == s.length() && count == 0){
+            res.add(new String(temp.substring(0, temp.length() - 1)));
+            return;
+        }
+        if(count < 0){
+            return;
+        }
+        for(int i = index; i < index + 3; i++){
+            if(i < s.length()){
+                if(i == index && s.charAt(i) == '0'){
+                    temp.append("0.");
+                    backtrack(s, index + 1, temp, count - 1);
+                    temp.delete(temp.length() - 2, temp.length());
+                    break;
+                }else if(Integer.parseInt(s.substring(index, i + 1)) <= 255){
+                    temp.append(s.substring(index, i + 1)).append(".");
+                    backtrack(s, i + 1, temp, count - 1);
+                    temp.delete(temp.length() - (i - index + 2), temp.length());
+                }
+            }
+        }
+    }
+}
