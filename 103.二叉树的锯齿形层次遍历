@@ -1,0 +1,155 @@
+/*
+
+给定一个二叉树，返回其节点值的锯齿形层次遍历。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
+
+例如：
+给定二叉树 [3,9,20,null,null,15,7],
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回锯齿形层次遍历如下：
+
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+
+*/
+
+/*
+方法一:BFS
+标准层序遍历,用双端队列linkedlist,并维持flag判断是奇数层还是偶数层,奇数层(根为奇数层)从队列头弹出节点,并从队列尾部加入弹出节点的左节点然后加入右节点
+偶数层从队尾弹出节点,并在队头先加入右节点然后加入左节点
+
+*/
+
+
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null){
+            return res;
+        }
+        List<Integer> temp = new ArrayList<>();
+
+        boolean flag = false;
+        int thisLevel = 1;
+        int nextLevel = 0;
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offerFirst(root);
+        while(!queue.isEmpty()){
+            if(!flag){
+                TreeNode tempNode = queue.pollFirst();
+                temp.add(tempNode.val);
+                thisLevel--;
+                if(tempNode.left != null){
+                    queue.offerLast(tempNode.left);
+                    nextLevel++;
+                }
+                if(tempNode.right != null){
+                    queue.offerLast(tempNode.right);
+                    nextLevel++;
+                }
+            }else{
+                TreeNode tempNode = queue.pollLast();
+                temp.add(tempNode.val);
+                thisLevel--;
+                if(tempNode.right != null){
+                    queue.offerFirst(tempNode.right);
+                    nextLevel++;
+                }
+                if(tempNode.left != null){
+                    queue.offerFirst(tempNode.left);
+                    nextLevel++;
+                }
+            }    
+            if(thisLevel == 0){
+                flag = !flag;
+                thisLevel = nextLevel;
+                nextLevel = 0;
+                res.add(new ArrayList<Integer>(temp));
+                temp.clear();
+            }
+        }
+        return res;
+    }
+}
+
+/*
+方法二:BFS 另一种写法 更简洁
+不用考虑queue中节点插入与取出在不同层中有不同的情况
+queue中节点全部尾插入.头poll出,并且新节点都是先加左节点,后加右节点
+但是在加入res子集temp时,判断是奇数层还是偶数层,选择头插还是尾插
+
+并且也不需要考虑每层遍历完清空temp,因为每层的temp都是新new出来的
+*/
+
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null){
+            return res;
+        }
+        int depth = 0;
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            List<Integer> temp = new ArrayList<>();
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                TreeNode tempNode = queue.poll();
+                if(depth % 2 == 0){
+                    temp.add(tempNode.val);
+                }else{
+                    temp.add(0, tempNode.val);
+                }
+                if(tempNode.left != null){
+                    queue.add(tempNode.left);
+                }
+                if(tempNode.right != null){
+                    queue.add(tempNode.right);
+                }
+            }
+            depth++;
+            res.add(temp);
+        }
+        return res;      
+    }
+}
+
+
+
+/*
+方法三:DFS 递归
+本质上与方法二BFS无区别
+
+*/
+
+
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+
+        helper(root, 0);
+        return res;
+    }
+    public void helper(TreeNode root, int level){
+        if(root == null){
+            return;
+        }
+        if(res.size() == level){
+            res.add(new ArrayList<Integer>());
+        }
+        if(level % 2 == 0){
+            res.get(level).add(root.val);
+        }else{
+            res.get(level).add(0, root.val);
+        }
+        helper(root.left, level + 1);
+        helper(root.right, level + 1);
+    }
+}
