@@ -1,0 +1,51 @@
+/*
+将一个按照升序排列的有序数组，转换为一棵高度平衡二叉搜索树。
+
+本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+
+示例:
+
+给定有序数组: [-10,-3,0,5,9],
+
+一个可能的答案是：[0,-3,9,-10,null,5]，它可以表示下面这个高度平衡二叉搜索树：
+
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+
+*/
+
+/*
+方法一:递归
+二叉树首先想到递归,有序数组转换成二叉搜索树,中序遍历的二叉搜索树为有序数组,并且要求高度平衡
+递归三要素:
+1.什么时候返回:start > end  (start与end为剩余未构建节点的范围)
+2.返回值:本次递归构建的根节点
+3.本次递归做什么:因为要求高度平衡,因此中间节点为根节点,找到根节点,并将根节点左边构建左子树,根节点右边构建右子树
+
+注意:因为求中间节点时,如果节点个数为偶数,可能有两种结果,int tmp = (start + end)/2 默认取得就是右中点为根节点, 未考虑左中点为根节点的情况
+因为题目只要求返回满足要求的一棵二叉树即可,不要求求出所有解,所以求出其中一种解即可
+
+*/
+
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if(nums.length == 0){
+            return null;
+        }
+        return helper(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode helper(int[] nums, int start, int end){
+        if(start > end){
+            return null;
+        }
+        int tmp = (start + end)/2;              //或 int tmp = (start + end) >>> 1;
+        TreeNode root = new TreeNode(nums[tmp]);
+        root.left = helper(nums, start, tmp - 1);
+        root.right = helper(nums, tmp + 1, end);
+        return root;
+    }
+}
