@@ -1,0 +1,56 @@
+/*
+
+根据一棵树的中序遍历与后序遍历构造二叉树。
+
+注意:
+你可以假设树中没有重复的元素。
+
+例如，给出
+
+中序遍历 inorder = [9,3,15,20,7]
+后序遍历 postorder = [9,15,7,20,3]
+返回如下的二叉树：
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+*/
+
+/*
+方法一:递归
+二叉树首先想到递归
+递归三要素():
+1.什么时候返回: 所有节点构建完毕,即对inorder和postorder维持instart endstart poststart postend指针指向构造过的位置
+当 inStart > inEnd || postStart > postEnd 时返回
+2.返回值: 返回每次递归构建完成的根节点
+3.本次递归做什么: 对于二叉树,对于本次递归,只关心root,root.left和root.right, 本题是构建二叉树,因此每次递归构建此二叉树即可
+取postorder最后一节点构建root 在inorder里找到根节点,左边的为左子树,右边的为右子树 同时postorder为左右根结构,找与inorder左子树同样长度的构建左子树,与inorder右子树同样长度的构建右子树即可
+
+*/
+
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        if(inorder.length == 0 || postorder.length == 0 || inorder.length != postorder.length){
+            return null;
+        }
+        return helper(inorder, 0 , inorder.length - 1, postorder, 0, postorder.length - 1);
+
+    }
+
+    private TreeNode helper(int[] inorder, int inStart, int inEnd, int[] postorder, int postStart, int postEnd){
+        if(inStart > inEnd || postStart > postEnd){
+            return null;
+        }
+        TreeNode root = new TreeNode(postorder[postEnd]);
+        int temp = 0;
+        while(inorder[inStart + temp] != postorder[postEnd]){
+            temp++;
+        }
+        root.left = helper(inorder, inStart, inStart + temp - 1, postorder, postStart, postStart + temp - 1);
+        root.right = helper(inorder, inStart + temp + 1, inEnd,postorder, postStart + temp, postEnd - 1);
+        return root;
+    }
+}
