@@ -27,7 +27,8 @@
 当 inStart > inEnd || postStart > postEnd 时返回
 2.返回值: 返回每次递归构建完成的根节点
 3.本次递归做什么: 对于二叉树,对于本次递归,只关心root,root.left和root.right, 本题是构建二叉树,因此每次递归构建此二叉树即可
-取postorder最后一节点构建root 在inorder里找到根节点,左边的为左子树,右边的为右子树 同时postorder为左右根结构,找与inorder左子树同样长度的构建左子树,与inorder右子树同样长度的构建右子树即可
+取postorder最后一节点构建root 在inorder里找到根节点,左边的为左子树,右边的为右子树
+同时postorder为左右根结构,使用与inorder左子树右子树同样的长度把postorder分成两部分(除去postorder最后一位根节点之外),为对应根节点的左子树与右子树
 
 */
 
