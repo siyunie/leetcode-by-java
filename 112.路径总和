@@ -34,3 +34,38 @@ class Solution {
         return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
     }
 }
+
+/*
+方法二:
+简单迭代
+维持两个stack来保存值与节点
+
+*/
+
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if(root == null){
+            return false;
+        }
+        Stack<TreeNode> nodeStack = new Stack<>();
+        Stack<Integer> sumStack = new Stack<>();
+        nodeStack.push(root);
+        sumStack.push(root.val);
+        while(!nodeStack.isEmpty()){
+            TreeNode node = nodeStack.pop();
+            int tmpSum = sumStack.pop();
+            if(tmpSum == sum && node.left == null && node.right == null){
+                return true;
+            }
+            if(node.left != null){
+                nodeStack.push(node.left);
+                sumStack.push(tmpSum + node.left.val);
+            }
+            if(node.right != null){
+                nodeStack.push(node.right);
+                sumStack.push(tmpSum + node.right.val);
+            }
+        }
+        return false;
+    }
+}
