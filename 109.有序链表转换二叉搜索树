@@ -1,0 +1,89 @@
+/*
+
+给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
+
+本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+
+示例:
+
+给定的有序链表： [-10, -3, 0, 5, 9],
+
+一个可能的答案是：[0, -3, 9, -10, null, 5], 它可以表示下面这个高度平衡二叉搜索树：
+
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+
+*/
+
+/*
+
+方法一:递归
+直接将链表转换为数组,本题就变为与108完全一样的题目,即找中间点构建根节点然后递归 (此题也只要求求出一个解即可,因此不用考虑偶数长度链表中间点取左中点还是右中点)
+
+*/
+
+class Solution {
+    public TreeNode sortedListToBST(ListNode head) {
+        if(head == null){
+            return null;
+        }
+        List<Integer> list = new ArrayList<>();
+        while(head != null){
+            list.add(head.val);
+            head = head.next;
+        }
+        return helper(list, 0, list.size() - 1);
+    }
+    private TreeNode helper(List<Integer> list, int start, int end){
+        if(start > end){
+            return null;
+        }
+        int mid = (start + end) >>> 1;
+        TreeNode root = new TreeNode(list.get(mid));
+        root.left = helper(list, start, mid - 1);
+        root.right = helper(list, mid + 1, end);
+        return root;
+    }
+}
+
+/*
+方法二:快慢指针+递归
+本质上也是找中间点,采用双指针slow与fast,一个走一步,一个走两步,当fast == null || fast.next == null时,slow走到中点,此时需要将两个链表断开
+所以维持一个pre指针,一直保持在slow的前置位,当到达终点时,pre.next == null断开链表, 同时对左右两端的头节点递归求解即可,即对左链表head,右链表slow.next
+
+注意此处因为当只剩一个节点时
+while(fast != null && fast.next != null){
+      pre = slow;
+      slow = slow.next;
+      fast = fast.next.next;
+      }
+走完一遍while循环即跳出,此时slow与fast都为null,此时使用TreeNode root = new TreeNode(slow.val); 构建根节点会报空指针异常
+因此在开头判断时,不仅要判断head == null时return null, 当head.next == null时,即只剩一个节点时,直接以此节点构建树节点并返回,即return new TreeNode(head.val);
+
+*/
+
+class Solution {
+    public TreeNode sortedListToBST(ListNode head) {
+        if(head == null){
+            return null;
+        }else if(head.next == null){
+            return new TreeNode(head.val);
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        ListNode pre = null;
+        while(fast != null && fast.next != null){
+            pre = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        pre.next = null;
+        TreeNode root = new TreeNode(slow.val);
+        root.left = sortedListToBST(head);
+        root.right = sortedListToBST(slow.next);
+        return root;
+    }
+}
