@@ -1,0 +1,66 @@
+/*
+
+给定一个二叉树和一个目标和，找到所有从根节点到叶子节点路径总和等于给定目标和的路径。
+
+说明: 叶子节点是指没有子节点的节点。
+
+示例:
+给定如下二叉树，以及目标和 sum = 22，
+
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+返回:
+
+[
+   [5,4,11,2],
+   [5,8,4,5]
+]
+
+*/
+
+/*
+方法一:回溯法
+考虑要输出具体结果,使用回溯法,与题目组合总数本质上一样,区别是组合总数给的是list,本题给的是二叉树
+因为二叉树有左右两个节点,因此dfs时左右两边都要走一遍,即 
+dfs(root.left, residual - root.val, stack);
+dfs(root.right, residual - root.val, stack);
+然后再回溯,状态置零,即stack.pop()
+
+本题需要注意的是判断找到结果时,因为此节点值还未放入,所以判断为residual == root.val && root.left == null && root.right == null
+而不是 residual == 0
+同时输出结果时,要将此root值放入,传入res之后再状态置零 即 
+stack.add(root.val);
+res.add(new ArrayList<Integer>(stack));
+stack.pop();          
+return;
+
+*/
+
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        dfs(root, sum, new Stack<Integer>());
+        return res;
+    }
+    
+    private void dfs(TreeNode root, int residual, Stack<Integer> stack){
+        if(root == null){
+            return;
+        }
+        if(residual == root.val && root.left == null && root.right == null){
+            stack.add(root.val);
+            res.add(new ArrayList<Integer>(stack));
+            stack.pop();
+            return;
+        }
+        stack.push(root.val);
+        dfs(root.left, residual - root.val, stack);
+        dfs(root.right, residual - root.val, stack);
+        stack.pop();
+    }
+}
