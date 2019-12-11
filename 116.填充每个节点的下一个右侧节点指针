@@ -1,0 +1,124 @@
+/*
+
+给定一个完美二叉树，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+
+初始状态下，所有 next 指针都被设置为 NULL。
+
+ 
+
+示例：
+
+
+
+输入：{"$id":"1","left":{"$id":"2","left":{"$id":"3","left":null,"next":null,"right":null,"val":4},"next":null,"right":{"$id":"4","left":null,"next":null,"right":null,"val":5},"val":2},"next":null,"right":{"$id":"5","left":{"$id":"6","left":null,"next":null,"right":null,"val":6},"next":null,"right":{"$id":"7","left":null,"next":null,"right":null,"val":7},"val":3},"val":1}
+
+输出：{"$id":"1","left":{"$id":"2","left":{"$id":"3","left":null,"next":{"$id":"4","left":null,"next":{"$id":"5","left":null,"next":{"$id":"6","left":null,"next":null,"right":null,"val":7},"right":null,"val":6},"right":null,"val":5},"right":null,"val":4},"next":{"$id":"7","left":{"$ref":"5"},"next":null,"right":{"$ref":"6"},"val":3},"right":{"$ref":"4"},"val":2},"next":null,"right":{"$ref":"7"},"val":1}
+
+解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。
+ 
+
+提示：
+
+你只能使用常量级额外空间。
+使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
+
+*/
+
+/*
+注意因为初始状态下,所有指针的next节点都被设为null,所以对于没有右节点的节点不需要管,不需要再对next赋值为null,因为默认就为null,只需要处理有右节点的指针
+*/
+
+/*
+方法一:递归
+二叉树首先想到递归
+判断当前节点如果右子树非空,则把左子树的next赋给右子树,并判断此节点的next节点是否为空,非空则将此节点的右子树的next节点赋给此节点的next节点的左子树
+然后递归处理左右子树
+
+注意递归一定不要纠结于整体怎么实现的,只看当前递归如何实现即可,此题利用默认已经存在的next节点来处理,而不要纠结上次递归next节点是如何连接的
+只需要处理本次递归即可,因此默认上次递归的next指向已经处理完毕
+即root节点的next已经再上次递归处理完 此次递归只用处理root.left和root.right的next指向即可
+
+*/
+
+
+class Solution {
+    public Node connect(Node root) {
+        if(root == null){
+            return null;
+        }
+        if(root.right != null){
+            root.left.next = root.right;
+            if(root.next != null){
+                root.right.next = root.next.left;
+            }
+        } 
+        connect(root.left);
+        connect(root.right);
+        return root;
+    }
+}
+
+/*
+方法二:递归 
+拉链法,即 将二叉树中间部分用next节点连上,类似于拉拉链,然后递归处理左右子树 每次递归只处理本次递归子树的中间部分
+所以        left = left.right;
+            right = right.left;
+即一直保持在本次递归树的中间部分
+
+*/
+
+class Solution {
+    public Node connect(Node root) {
+        if(root == null){
+            return null;
+        }
+        Node left = root.left;
+        Node right = root.right;
+        while(left != null){
+            left.next = right;
+            left = left.right;
+            right = right.left;
+        }
+        connect(root.left);
+        connect(root.right);
+        return root;
+    }
+}
+
+
+/*
+方法三:迭代
+本质上是维持一个tmp节点指向此层的最左节点,然后将下一层的所有节点通过next连接(本层的next连接在上一次迭代已经做完,所以tmp节点的next已经处理完毕)
+然后一层一层处理 类似层序遍历
+
+*/
+
+class Solution {
+    public Node connect(Node root) {
+        if(root == null){
+            return null;
+        }
+        Node tmp = null;
+        Node head = root;
+        while(head != null){
+            while(tmp != null){
+                tmp.left.next = tmp.right;
+                if(tmp.next != null){
+                    tmp.right.next = tmp.next.left;
+                }
+                tmp = tmp.next;
+            }
+            tmp = head;
+            head = head.left;
+        }
+        return root;
+    }
+}
