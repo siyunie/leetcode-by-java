@@ -1,0 +1,109 @@
+/*
+
+给定一个二叉树
+
+struct Node {
+  int val;
+  Node *left;
+  Node *right;
+  Node *next;
+}
+填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+
+初始状态下，所有 next 指针都被设置为 NULL。
+
+ 
+
+进阶：
+
+你只能使用常量级额外空间。
+使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。
+ 
+
+示例：
+
+
+
+输入：root = [1,2,3,4,5,null,7]
+输出：[1,#,2,3,#,4,5,7,#]
+解释：给定二叉树如图 A 所示，你的函数应该填充它的每个 next 指针，以指向其下一个右侧节点，如图 B 所示。
+ 
+
+提示：
+
+树中的节点数小于 6000
+-100 <= node.val <= 100
+
+*/
+
+/*
+方法一:迭代 层序遍历
+因为题目未像上一题一样要求一定只能使用常数空间,只是进阶要求只能使用常数空间,所以考虑层序遍历
+标准层序遍历,维持队列,不断对此层的节点进行next连接即可
+
+*/
+
+class Solution {
+    public Node connect(Node root) {
+        if(root == null){
+            return null;
+        }
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            Node pre = null;
+            for(int i = 0; i < size; i++){
+                Node tmp = queue.poll();
+                if(pre != null){
+                    pre.next = tmp;
+                }
+                pre = tmp;
+                if(tmp.left != null){
+                    queue.offer(tmp.left);
+                }
+                if(tmp.right != null){
+                    queue.offer(tmp.right);
+                }
+            }
+        }
+        return root;
+    }
+}
+
+/*
+方法二:迭代 层序遍历变形
+考虑只能使用常数级空间
+维持cur指向当前层的第一个非null节点, head维持下一层的第一个非null节点的前置节点,利用tail节点在head层移动进行连接
+当处理完head层后,将cur移动置head.next位置,即下一层的第一个非null节点,继续连接 下一层的下一层节点
+
+此处空间复杂度有疑问:
+        这样永远只有以一个新的head节点占内存,是因为每轮结束后,之前的head节点不可达,会被自动回收,因此能保证空间复杂度为常数级?
+        
+*/
+
+class Solution {
+    public Node connect(Node root) {
+        if(root == null){
+            return null;
+        }
+        Node cur = root;
+        while(cur != null){
+            Node head = new Node();
+            Node tail = head;
+            while(cur != null){
+                if(cur.left != null){
+                    tail.next = cur.left;
+                    tail = tail.next;
+                }
+                if(cur.right != null){
+                    tail.next = cur.right;
+                    tail = tail.next;
+                }
+                cur = cur.next;
+            }
+            cur = head.next;
+        }
+        return root;
+    }
+}
