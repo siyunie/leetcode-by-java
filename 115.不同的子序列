@@ -1,0 +1,106 @@
+/*
+
+给定一个字符串 S 和一个字符串 T，计算在 S 的子序列中 T 出现的个数。
+
+一个字符串的一个子序列是指，通过删除一些（也可以不删除）字符且不干扰剩余字符相对位置所组成的新字符串。（例如，"ACE" 是 "ABCDE" 的一个子序列，而 "AEC" 不是）
+
+示例 1:
+
+输入: S = "rabbbit", T = "rabbit"
+输出: 3
+解释:
+
+如下图所示, 有 3 种可以从 S 中得到 "rabbit" 的方案。
+(上箭头符号 ^ 表示选取的字母)
+
+rabbbit
+^^^^ ^^
+rabbbit
+^^ ^^^^
+rabbbit
+^^^ ^^^
+示例 2:
+
+输入: S = "babgbag", T = "bag"
+输出: 5
+解释:
+
+如下图所示, 有 5 种可以从 S 中得到 "bag" 的方案。 
+(上箭头符号 ^ 表示选取的字母)
+
+babgbag
+^^ ^
+babgbag
+^^    ^
+babgbag
+^    ^^
+babgbag
+  ^  ^^
+babgbag
+    ^^^
+
+*/
+
+/*
+方法一:动态规划
+看到子序列问题先想到回溯法,但是答案只要求输出解的个数而不是所有解,回溯法肯定超时,所以考虑动态规划
+dp[i][j] 表示用 s字符串的前i个字符匹配t字符串前j个字符的所有可能个数
+因为是前x个字符,所以初始化一定为字符串长度+1 即int[][] dp = new int[s.length() + 1][t.length() + 1]; 最后输出dp[s.length()][t.length()]即为结果
+动态转移方程: 当s的第i个字符串与t的第j个字符串相等时,有两种情况,
+                                情况1:使用这个字符串去匹配,此时结果与dp[i - 1][j - 1]相同
+                                情况2:不使用这个字符串去匹配,即用只用前i-1个字符去匹配,此时结果为dp[i - 1][j]
+                                所以综合情况1,2 dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+            当s的第i个字符串与t的第j个字符串不相等时,只有一种情况,即之前的情况2,使用前i-1个字符去匹配,即 dp[i][j] = dp[i - 1][j];
+
+注意此时的s的第i个字符与t的第j个字符相等为 s.charAt(i - 1) == t.charAt(j - 1) 因为i 与 j 可以看作是从1开始取 因为代表前i/j个字符
+初始化状态 dp[0][j] = 0
+          dp[i][0] = 1
+          dp[0][0] = 1
+          即当s为空时,无法匹配,结果为0,t为空时,空字符串为所有字符串子串,所以结果为1
+          当s与t都为空字符串时,也匹配,结果为1
+          
+*/
+
+class Solution {
+    public int numDistinct(String s, String t) {
+        int[][] dp = new int[s.length() + 1][t.length() + 1];
+        for(int i = 0; i < s.length() + 1; i++){
+            for(int j = 0; j < t.length() + 1; j++){
+                if(j == 0){
+                    dp[i][j] = 1;
+                }else if(i == 0){
+                    dp[i][j] = 0;
+                }else{
+                    if(s.charAt(i - 1) == t.charAt(j - 1)){
+                        dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                    }else{
+                        dp[i][j] = dp[i - 1][j];
+                    }
+                }
+            }
+        }
+        return dp[s.length()][t.length()];
+    }
+}
+
+
+//换一种赋初始值的方法
+
+class Solution {
+    public int numDistinct(String s, String t) {
+        int[][] dp = new int[s.length() + 1][t.length() + 1];
+        for(int i = 0; i < s.length() + 1; i++){
+            dp[i][0] = 1;
+        }
+        for(int i = 1; i < s.length() + 1; i++){
+            for(int j = 1; j < t.length() + 1; j++){
+                if(s.charAt(i - 1) == t.charAt(j - 1)){
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                }else{
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[s.length()][t.length()];
+    }
+}
