@@ -1,0 +1,73 @@
+/*
+给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。
+
+
+
+在杨辉三角中，每个数是它左上方和右上方的数的和。
+
+示例:
+
+输入: 3
+输出: [1,3,3,1]
+进阶：
+
+你可以优化你的算法到 O(k) 空间复杂度吗？
+
+*/
+
+/*
+方法一:动态规划
+考虑空间复杂度O(K) 只用一个list,每一行的值直接在list上修改
+对每一个数,在对其修改之前使用tmp储存,然后修改值为本身的值+前一个数的值,注意此处前一数的值为前一个数为修改之前的值,所以每此循环开始用pre保存tmp
+即pre为前一个数未修改的值,然后再修改tmp的值为当前数未修改的值,然后再修改当前数的值为 未修改的前一个数的值加自己的值 tmp+pre 即可
+
+*/
+
+
+注意此题 k是从0开始计算的,即 k == 0是第一行 1
+
+class Solution {
+    public List<Integer> getRow(int rowIndex) {
+        List<Integer> res = new ArrayList<>();
+        if(rowIndex < 0){
+            return res;
+        }
+        res.add(1);
+        for(int i = 1; i <= rowIndex; i++){
+            int tmp = 1;
+            int pre = 1;
+            for(int j = 1; j < i; j++){
+                pre = tmp;
+                tmp = res.get(j);
+                res.set(j, tmp + pre);    //或 res.set(j, res.get(j) + pre);
+            }
+            res.add(1);
+        }
+        return res;
+    }
+}
+
+/*
+方法二:动态规划
+倒着算
+因为正着算要保存之前没修改的值,不然新值覆盖旧值就得不到之后的结果,所以考虑倒着赋值,这样每次使用的都是本身未修改的值和前一个数也未修改的值
+因此不需要使用tmp和pre保存前一轮和本轮未修改的值
+
+*/
+
+class Solution {
+    public List<Integer> getRow(int rowIndex) {
+        List<Integer> res = new ArrayList<>();
+        if(rowIndex < 0){
+            return res;
+        }
+        res.add(1);
+        for(int i = 1; i <= rowIndex; i++){
+            for(int j = i - 1; j > 0; j--){
+                res.set(j, res.get(j) + res.get(j - 1));
+            }
+            res.add(1);
+        }
+        return res;
+    }
+}
