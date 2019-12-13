@@ -71,3 +71,29 @@ class Solution {
         return res;
     }
 }
+
+/*
+方法三:数学法
+杨辉三角每一层都是组合数
+同时组合数可以简化为前一组合数*(n - k + 1)/k
+
+注意要先用long型保存cur值,最后添加时再强转成int,不然会溢出
+
+*/
+
+class Solution {
+    public List<Integer> getRow(int rowIndex) {
+        long pre = 1;
+        List<Integer> res = new ArrayList<>();
+        if(rowIndex < 0){
+            return res;
+        }
+        res.add(1);
+        for(int i = 1; i <= rowIndex; i++){
+            long cur = pre * (rowIndex - i + 1)/i;
+            res.add((int)cur);
+            pre = cur;
+        }
+        return res;
+    }
+}
