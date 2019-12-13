@@ -157,3 +157,41 @@ class Solution {
         return dp[0];
     }
 }
+
+/*
+方法四:递归+记忆化
+递归自顶向下 直接递归会有大量重复计算导致超时,所以记忆化,维持memo数组保存已经算过路径的长度,如果此条路径已经算过,直接返回
+
+注意此时memo数组一定要为Integer, 如果为int型,默认未赋值时为0,进行判断 此路径是否已经算过时,只能memo[level][index] != 0 
+但是有可能本来路径长度就为0 比如题目复杂时,点的值有负数,导致路径长度为0,会误判
+所以memo要为Integer,这样可以直接判断是否为null 来知道此路径是否已经算过
+
+递归三要素:
+1.递归的终止条件:此路径已经计算过,或者到了最后一行, 到了最后一行时先对memo赋值为最后一行节点值再返回
+2.本次递归返回什么:此节点的最短路径值
+3.本次递归做什么:算此节点的最短路径长,即取左右两条路径的短的那条加上此节点的值
+
+*/
+
+class Solution { 
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int row = triangle.size();
+        int col = triangle.get(row - 1).size();
+        Integer[][] memo = new Integer[row][col];
+        return helper(triangle, memo, row, 0, 0);
+    }
+
+    public int helper(List<List<Integer>> triangle, Integer[][] memo, int row, int level, int index){
+        if(memo[level][index] != null){
+            return memo[level][index];
+        }
+        if(level == row - 1){
+            memo[row - 1][index] = triangle.get(row - 1).get(index);
+            return memo[row - 1][index];
+        }
+        int left = helper(triangle, memo, row, level + 1, index);
+        int right = helper(triangle, memo, row, level + 1, index + 1);
+        memo[level][index] = Math.min(left, right) + triangle.get(level).get(index);
+        return memo[level][index];
+    }
+}
