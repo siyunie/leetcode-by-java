@@ -1,0 +1,49 @@
+/*
+方法一:双指针
+维持头指针尾指针,当头尾指针指向的为字母或数字时,判断是否相等,相等则向中间移动指针直到双指针遇到
+注意此处不能只判断一半的长度,即不能头指针移动到中间点就返回true
+因为字符串可能有非数字或者非字母的字符,比如字符串为,,,,,,hello 此时如果只判断前半段,因为前半段非数字与字母,头指针会直接移到中点,此时直接返回true
+但是此字符串明显不是回文串
+所以不能只判断一半就返回
+
+*/
+
+class Solution {
+    public boolean isPalindrome(String s) {
+        if(s == null){
+            return false;
+        }
+        s = s.trim().toLowerCase();
+        if(s.length() == 0){
+            return true;
+        }
+        int i = 0;
+        int j = s.length() - 1;
+        while(i < j){
+            while(i < s.length() && !helper(s.charAt(i))){
+                i++;
+            }
+            while(j >= 0 && !helper(s.charAt(j))){
+                j--;
+            }
+            if(i >= j){
+                return true;
+            }
+            if(s.charAt(i) != s.charAt(j)){
+                return false;
+            }
+            i++;
+            j--;
+        }
+        return true;
+    }
+
+    public boolean helper(char cha){
+        if(cha >= 'a' && cha <= 'z'){
+            return true;
+        }else if(cha >= '0' && cha <= '9'){
+            return true;
+        }
+        return false;
+    }
+}
