@@ -1,0 +1,117 @@
+/*
+
+给定两个单词（beginWord 和 endWord）和一个字典，找到从 beginWord 到 endWord 的最短转换序列的长度。转换需遵循如下规则：
+
+每次转换只能改变一个字母。
+转换过程中的中间单词必须是字典中的单词。
+说明:
+
+如果不存在这样的转换序列，返回 0。
+所有单词具有相同的长度。
+所有单词只由小写字母组成。
+字典中不存在重复的单词。
+你可以假设 beginWord 和 endWord 是非空的，且二者不相同。
+示例 1:
+
+输入:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+输出: 5
+
+解释: 一个最短转换序列是 "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+     返回它的长度 5。
+示例 2:
+
+输入:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+输出: 0
+
+解释: endWord "cog" 不在字典中，所以无法进行转换。
+
+*/
+
+/*
+方法一:双向广度优先搜索
+可看成是从头出发找中间点,看是否能到尾部,因此考虑使用BFS
+因为从一边开始搜索,即从beginWord -> endWord 效率较低
+考虑双向搜索,即beginWord走一步,endWord走一步,相遇即返回
+
+使用单词某字母变为*作为key,将所有此类型的word都放在这个key对应的value里,此处value为一个ArrayList<String>
+先对wordList, beginWord, endWord 都做这样的预处理,避免每次都要遍历找中间点
+
+*/
+
+class Solution {
+    int L;
+    HashMap<String,ArrayList<String>> allDict = new HashMap<>();
+
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        if(!wordList.contains(endWord)){
+            return 0;
+        }
+        L = beginWord.length();
+        for(String word: wordList){
+            for(int i = 0; i < L; i++){
+                String tmpWord = word.substring(0, i) + '*' + word.substring(i + 1, L);
+                ArrayList<String> dict = allDict.getOrDefault(tmpWord, new ArrayList<String>());
+                dict.add(word);
+                allDict.put(tmpWord, dict);
+            }
+        }
+
+        Queue<HashMap<String, Integer>> queueBegin = new LinkedList<>();
+        Queue<HashMap<String, Integer>> queueEnd = new LinkedList<>();
+        queueBegin.offer(new HashMap<String, Integer>(){{
+            put(beginWord, 1);
+        }});
+        queueEnd.offer(new HashMap<String, Integer>(){{
+            put(endWord, 1);
+        }});
+
+        HashMap<String, Integer> vistedBegin = new HashMap<>();
+        HashMap<String, Integer> vistedEnd = new HashMap<>();
+        vistedBegin.put(beginWord, 1);
+        vistedEnd.put(endWord, 1);
+
+        while(!queueBegin.isEmpty() && !queueEnd.isEmpty()){
+            int res = helper(queueBegin, vistedBegin, vistedEnd);
+            if(res > 0){
+                return res;
+            }
+            res = helper(queueEnd, vistedEnd, vistedBegin);
+            if(res > 0){
+                return res;
+            }
+        }
+        return 0;
+    }
+
+    private int helper(Queue<HashMap<String, Integer>> vistQueue, HashMap<String, Integer> visted, HashMap<String, Integer> otherVisted){
+        HashMap<String, Integer> node = vistQueue.poll();
+        Set<String> set = node.keySet();
+        Iterator<String> ite1 = set.iterator();
+        String word = ite1.next();
+        int level = node.get(word);
+
+        for(int i = 0; i < L; i++){
+            String tmpWord = word.substring(0, i) + '*' + word.substring(i + 1, L);
+            for(String dictWord: allDict.getOrDefault(tmpWord, new ArrayList<String>())){
+                if(otherVisted.containsKey(dictWord)){
+                    return level + otherVisted.get(dictWord);
+                }
+                if(!visted.containsKey(dictWord)){
+                    visted.put(dictWord, level + 1);
+                    vistQueue.offer(new HashMap<String, Integer>(){{
+                        put(dictWord, level + 1);
+                    }});
+                }
+            }
+        }
+        return -1;
+    }
+}
