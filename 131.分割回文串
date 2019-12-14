@@ -1,0 +1,86 @@
+
+
+/*
+方法一:回溯法
+标准回溯法,注意回溯过程中一旦判断当前分割出非回文字符串,直接剪枝,避免时间消耗
+即 if(!isAns(s, start, i)){
+       continue;
+     }
+
+因为分割字符串有损耗,即substring,所以判断是否回文时用双指针来判断,只有确定当前分割出来的字符串是回文字符串再substring分割
+
+*/
+
+class Solution {
+    List<List<String>> res = new ArrayList<>();
+    public List<List<String>> partition(String s) {
+        helper(s, new Stack<String>(), 0);
+        return res;
+    }
+
+    private void helper(String s, Stack<String> stack, int start){
+        if(start == s.length()){
+            res.add(new ArrayList<String>(stack));
+        }
+
+        for(int i = start; i < s.length(); i++){
+            if(!isAns(s, start, i)){
+                continue;
+            }
+            stack.push(s.substring(start, i + 1));
+            helper(s, stack, i + 1);
+            stack.pop();
+        }
+    }
+
+    private boolean isAns(String s, int start, int end){
+        while(start < end){
+            if(s.charAt(start) != s.charAt(end)){
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+}
+
+/*
+方法二:回溯法+动态规划
+优化判断是否回文的过程,用dp[i][j]保存s.substring(i,j)是否为回文字符串的结果
+当s.charAt(i) == s.charAt(j) && (j - i <= 1 ||dp[i + 1][j - 1]) 时回文
+i可以取到j,因为单字符的字符串也回文,同样也要对其dp赋值true 同时因为i与j可能相同dp[i + 1][j - 1]可能出现 i + 1 > j - 1 因此前面短路判断j - i <= 1
+此处也可 j - i <= 2 因为当 j - i == 2时 类似 a b a 这样,只要两端字符相等,一定回文,所以此处 <= 1 或 <= 2 均可
+
+*/
+
+class Solution {
+    List<List<String>> res = new ArrayList<>();
+    public List<List<String>> partition(String s) {i
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        for(int j = 0; j < s.length(); j++){
+            for(int i = 0; i <= j; i++){
+                if(s.charAt(i) == s.charAt(j) && (j - i <= 1 ||dp[i + 1][j - 1])){    //或 j - i <= 2 也可
+                    dp[i][j] = true;
+                }
+            }
+        }
+        helper(s, new Stack<String>(), 0, dp);
+        return res;
+    }
+
+    private void helper(String s, Stack<String> stack, int start, boolean[][] dp){
+        if(start == s.length()){
+            res.add(new ArrayList<String>(stack));
+        }
+
+        for(int i = start; i < s.length(); i++){
+            if(!dp[start][i]){
+                continue;
+            }
+            stack.push(s.substring(start, i + 1));
+            helper(s, stack, i + 1, dp);
+            stack.pop();
+        }
+    }
+}
