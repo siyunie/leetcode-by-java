@@ -1,0 +1,59 @@
+/*
+
+给定无向连通图中一个节点的引用，返回该图的深拷贝（克隆）。图中的每个节点都包含它的值 val（Int） 和其邻居的列表（list[Node]）。
+
+示例：
+
+
+
+输入：
+{"$id":"1","neighbors":[{"$id":"2","neighbors":[{"$ref":"1"},{"$id":"3","neighbors":[{"$ref":"2"},{"$id":"4","neighbors":[{"$ref":"3"},{"$ref":"1"}],"val":4}],"val":3}],"val":2},{"$ref":"4"}],"val":1}
+
+解释：
+节点 1 的值是 1，它有两个邻居：节点 2 和 4 。
+节点 2 的值是 2，它有两个邻居：节点 1 和 3 。
+节点 3 的值是 3，它有两个邻居：节点 2 和 4 。
+节点 4 的值是 4，它有两个邻居：节点 1 和 3 。
+ 
+
+提示：
+
+节点数介于 1 到 100 之间。
+无向图是一个简单图，这意味着图中没有重复的边，也没有自环。
+由于图是无向的，如果节点 p 是节点 q 的邻居，那么节点 q 也必须是节点 p 的邻居。
+必须将给定节点的拷贝作为对克隆图的引用返回。
+
+*/
+
+/*
+方法一:递归
+定义一个hashmap保存旧节点与新节点的映射,保证每个新节点只被创建一次
+
+递归三要素:
+1:什么时候返回:节点为空   其实因为这个递归中不是每次必定走递归支路,而是由一个判断,所以这个返回值不会被用到,
+                        除非原图就是空节点, 否则最终所有节点的深拷贝都被创建之后一定会走if(map.containsKey(allNode))这条路
+                        而不会通过node == null 返回
+2.本次递归返回值:创建好的深克隆新节点
+3.本次递归做什么:以传入的原图节点的值node新建一个新节点copy,并将node的相邻节点的深拷贝也加入到copy的相邻节点中
+                需判断相邻节点的深拷贝是否已经被创建,如果已经被创建,则直接加入,否则加入递归创建出的相邻节点
+
+*/
+
+class Solution {
+    Map<Node, Node> map = new HashMap<>();
+    public Node cloneGraph(Node node) {
+        if(node == null){
+            return null;
+        }
+        Node copy = new Node(node.val, new ArrayList<>());
+        map.put(node, copy);
+        for(Node allNode: node.neighbors){
+            if(map.containsKey(allNode)){
+                copy.neighbors.add(map.get(allNode));
+            }else{
+                copy.neighbors.add(cloneGraph(allNode));
+            }
+        }
+        return copy;
+    }
+}
