@@ -1,0 +1,95 @@
+/*
+给定一个链表，每个节点包含一个额外增加的随机指针，该指针可以指向链表中的任何节点或空节点。
+
+要求返回这个链表的深拷贝。 
+
+ 
+
+示例：
+
+
+
+输入：
+{"$id":"1","next":{"$id":"2","next":null,"random":{"$ref":"2"},"val":2},"random":{"$ref":"2"},"val":1}
+
+解释：
+节点 1 的值是 1，它的下一个指针和随机指针都指向节点 2 。
+节点 2 的值是 2，它的下一个指针指向 null，随机指针指向它自己。
+ 
+
+提示：
+
+你必须返回给定头的拷贝作为对克隆列表的引用。
+
+*/
+
+/*
+方法一:递归 dfs
+类似于133克隆图
+使用map保存原节点与拷贝节点的映射
+区别在于133再new copy之前不用判断copy是否存在,因为在上一次递归中已经判断过,如果copy已经存在是不会进入到此次递归的,所以copy一定不存在,因此可以直接new
+但是在本题中,因为每个节点有两个指向,random和next,所以虽然走random时判断过是否存在,但再连接next节点时,进入下次递归,此时next节点可能已经拷贝过了
+因此在开头要加一次判断
+
+递归三要素:
+1.什么时候返回:节点为null时
+2.本次递归返回值:返回拷贝过的头节点
+3.本次递归做什么:新建拷贝节点,并将拷贝节点的random和next接到对应拷贝节点上
+                (需判断对应节点是否已经创建,如已经创建,直接接上,否则,拿到对应递归建立的新节点接上)
+
+*/
+
+class Solution {
+    Map<Node, Node> map = new HashMap<>();
+    public Node copyRandomList(Node head) {
+        if(head == null){
+            return null;
+        }
+        Node copy;
+        if(map.containsKey(head)){
+            copy = map.get(head);
+        }else{
+            copy = new Node(head.val, null, null);
+            map.put(head, copy);
+        }
+        if(map.containsKey(head.random)){
+            copy.random = map.get(head.random);
+        }else{
+            copy.random = copyRandomList(head.random);
+        }
+        Node next = copyRandomList(head.next);
+        copy.next = next;
+        return copy;
+    }
+}
+
+/*
+方法二:类似BFS
+方法一在本题时间复杂度太高,考虑类似BFS
+同样维持map判断节点是否已经创建
+第一次遍历,将所有拷贝节点创建出来,并在map里建立原节点与拷贝节点的映射
+第二次遍历,将所有拷贝节点的next和random都接到对应的拷贝节点上,因为第一步所有拷贝节点都已经创建出来了,所以第二次遍历时直接取map里取对应的拷贝节点即可
+
+*/
+
+class Solution {
+    public Node copyRandomList(Node head) {
+        if(head == null){
+            return null;
+        }
+        Map<Node, Node> map = new HashMap<>();
+        Node tmp = head;
+        while(tmp != null){
+            Node copy = new Node(tmp.val, null, null);
+            map.put(tmp, copy);
+            tmp = tmp.next;
+        }
+        tmp = head;
+        while(tmp != null){
+            map.get(tmp).next = map.get(tmp.next);
+            map.get(tmp).random = map.get(tmp.random);
+            tmp = tmp.next;
+        }
+        return map.get(head);
+    }
+}
