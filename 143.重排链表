@@ -1,0 +1,103 @@
+/*
+给定一个单链表 L：L0→L1→…→Ln-1→Ln ，
+将其重新排列后变为： L0→Ln→L1→Ln-1→L2→Ln-2→…
+
+你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+
+示例 1:
+
+给定链表 1->2->3->4, 重新排列为 1->4->2->3.
+示例 2:
+
+给定链表 1->2->3->4->5, 重新排列为 1->5->2->4->3.
+
+*/
+
+/*
+方法一:HashMap+迭代
+用hashmap存原始链表的位置与节点
+迭代进行操作,头节点的下一个节点接尾节点,然后头原来的下一个节点后接尾的前一个节点,依次进行这种操作
+因为为单向链表,所以用hashmap存位置+节点,这样就可以尾节点接完之后依次接前一个节点
+
+*/
+
+class Solution {
+    public void reorderList(ListNode head) {
+        if(head == null){
+            return;
+        }
+        Map<Integer, ListNode> map = new HashMap<>();
+        int i = 0;
+        ListNode tmp = head;
+        while(tmp != null){
+            map.put(i, tmp);
+            i++;
+            tmp = tmp.next;
+        }
+        i--;
+        int j = 0;
+        while(j < i - 1){
+            ListNode pre = map.get(j);
+            ListNode cur = map.get(i);
+            ListNode next = pre.next;
+            pre.next = cur;
+            cur.next = next;
+            i--;
+            j++;
+            ListNode tail = map.get(i);
+            tail.next = null;
+        }
+    }
+}
+
+/*
+方法二:双指针+反转链表
+用快指针慢指针找到链表中点,断开中点使其成为左链表与右链表
+反转右链表,然后交替插两个链表中元素
+
+注意交替插时,判断循环条件一定是 newHead != null 而不是 head != null 因为快慢指针当原链表节点个数为偶数是,两链表节点个数相同,这两个判断结果一样
+但是但原链表节点个数为奇数时,左链表比右链表长1,此时如果插到最后一个节点时,判断head != null会导致newHead已经为null了,报空指针异常
+所以循环条件一定要是 newHead != null
+
+*/
+
+class Solution {
+    public void reorderList(ListNode head) {
+        if(head == null){
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast.next != null && fast.next.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode tmp = slow.next;
+        slow.next = null;
+        ListNode newHead = reverseList(tmp);
+        while(newHead != null){
+            ListNode next = head.next;
+            ListNode newNext = newHead.next;
+            head.next = newHead;
+            newHead.next = next;
+            head = next;
+            newHead = newNext;
+        } 
+    }
+
+    private ListNode reverseList(ListNode head){
+        if(head == null){
+            return null;
+        }
+        ListNode tail = head;
+        head = head.next;
+        tail.next = null;
+        while(head != null){
+            ListNode tmp = head.next;
+            head.next = tail;
+            tail = head;
+            head = tmp;
+        }
+        return tail;
+    }
+}
