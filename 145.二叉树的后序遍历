@@ -1,0 +1,102 @@
+/*
+给定一个二叉树，返回它的 后序 遍历。
+
+示例:
+
+输入: [1,null,2,3]  
+   1
+    \
+     2
+    /
+   3 
+
+输出: [3,2,1]
+进阶: 递归算法很简单，你可以通过迭代算法完成吗？
+
+*/
+
+/*
+方法一:递归
+标准后序遍历递归
+
+*/
+
+class Solution {
+    List<Integer> res = new ArrayList<>();
+    public List<Integer> postorderTraversal(TreeNode root) {
+        if(root == null){
+            return res;
+        }
+        postorder(root);
+        return res;
+    }
+    private void postorder(TreeNode root){
+        if(root == null){
+            return;
+        }
+        postorder(root.left);
+        postorder(root.right);
+        res.add(root.val);
+    }
+}
+
+/*
+方法二:迭代
+
+*/
+
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if(root == null){
+            return res;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode pre = null;
+        stack.push(root);
+        while(!stack.isEmpty()){
+            TreeNode tmp = stack.peek();
+            if((tmp.left == null && tmp.right == null) || (pre != null && (pre == tmp.left || pre == tmp.right))){ //当tmp为叶子节点,或者已经遍历过了
+                pre = stack.pop();
+                res.add(pre.val);
+            }else{
+                if(tmp.right != null){
+                    stack.push(tmp.right);
+                }
+                if(tmp.left != null){
+                    stack.push(tmp.left);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+
+/*
+方法三:迭代写法二
+对stack,添加左节点,再添加右节点,同时对res采用头插法
+
+*/
+
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if(root == null){
+            return res;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while(!stack.isEmpty()){
+            TreeNode tmp = stack.pop();
+            if(tmp.left != null){
+                stack.push(tmp.left);
+            }
+            if(tmp.right != null){
+                stack.push(tmp.right);
+            }
+            res.add(0, tmp.val);
+        }
+        return res;
+    }
+}
