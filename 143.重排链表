@@ -101,3 +101,36 @@ class Solution {
         return tail;
     }
 }
+
+
+/*
+方法三:双端队列
+使用双端队列,依次接头与尾
+注意最后需要判断cur是否为null, 因为每轮循环里queue会poll两次,所以有可能poll一次之后queue已经为空,此时在poll第二次,cur已经为null,此时不用操作
+但是如果此时cur不为null,需要将尾节点置为null,以免形成环形链表
+
+*/
+
+class Solution {
+    public void reorderList(ListNode head) {
+        if(head == null){
+            return;
+        }
+        Deque<ListNode> queue = new LinkedList<>();
+        ListNode tmp = head;
+        while(tmp != null){
+            queue.offer(tmp);
+            tmp = tmp.next;
+        }
+        ListNode cur = queue.poll();
+        while(!queue.isEmpty()){
+            cur.next = queue.pollLast();
+            cur = cur.next;
+            cur.next = queue.pollFirst();
+            cur = cur.next;
+        }
+        if(cur != null){
+            cur.next = null;
+        }
+    }
+}
