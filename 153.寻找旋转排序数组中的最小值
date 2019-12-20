@@ -44,3 +44,28 @@ class Solution {
         return nums[left];
     }
 }
+
+/*
+方法二:二分法
+更加直观的二分法,相比标准二分法做更小改动
+只多添加一个判断,当不满足前两判断时,说明数组已经顺序,直接输出left和right中较小的那个即为结果
+
+*/
+
+class Solution {
+    public int findMin(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while(left < right){
+            int mid = (left + right) >>> 1;
+            if(nums[mid] > nums[right]){
+                left = mid + 1;
+            }else if(nums[mid] < nums[left]){
+                right = mid;
+            }else{
+                return nums[left] < nums[right]?nums[left]:nums[right];
+            }
+        }
+        return nums[left];
+    }
+}
