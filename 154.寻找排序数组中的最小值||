@@ -1,0 +1,29 @@
+
+
+/*
+方法一:二分法
+二分法加上另一种情况,即nums[mid]>=nums[left]并且nums[mid]<=nums[right]时 此时right-- 
+可能性一是已经顺序排序,此时right--直到最后right==left输出最小值
+可能性二是nums[mid]==nums[right]==nums[left]同时可以right--减小范围
+可能性三是nums[mid]>nums[left] && nums[mid]==nums[right]答案一定不是right所以可以right--缩小范围
+可能性三是nums[mid]==nums[mid] && nums[mid]<nums[right]答案一定不是right所以可以right--缩小范围
+
+*/
+
+class Solution {
+    public int findMin(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while(left < right){
+            int mid = (left + right) >>> 1;
+            if(nums[mid] > nums[right]){
+                left = mid + 1;
+            }else if(nums[mid] < nums[left]){
+                right = mid;
+            }else{
+                right--;
+            }
+        }
+        return nums[left];
+    }
+}
