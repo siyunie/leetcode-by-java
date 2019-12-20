@@ -1,0 +1,46 @@
+/*
+假设按照升序排序的数组在预先未知的某个点上进行了旋转。
+
+( 例如，数组 [0,1,2,4,5,6,7] 可能变为 [4,5,6,7,0,1,2] )。
+
+请找出其中最小的元素。
+
+你可以假设数组中不存在重复元素。
+
+示例 1:
+
+输入: [3,4,5,1,2]
+输出: 1
+示例 2:
+
+输入: [4,5,6,7,0,1,2]
+输出: 0
+
+*/
+
+/*
+方法一:二分法
+
+通过标准二分法改进,当mid的值是顺序的,即left<mid<right或者left>mid>right或者left=mid<right或者left=mid>right
+此时说明结果不是left就是right,直接返回left和right里小的那个
+注意是有可能left=mid>right的,比如数组为 2 1 此时left=mid=2>right=1 所以返回前一定要比较left和right的大小.然后返回小的那个
+
+*/
+
+class Solution {
+    public int findMin(int[] nums) {
+        int left = 0;
+        int right = nums.length - 1;
+        while(left < right){
+            int mid = (left + right) >>> 1;
+            if(nums[mid] > nums[left] && nums[mid] > nums[right]){
+                left = mid + 1;
+            }else if(nums[mid] < nums[left] && nums[mid] < nums[right]){
+                right = mid;
+            }else{
+                return nums[left] < nums[right]?nums[left]:nums[right];
+            }
+        }
+        return nums[left];
+    }
+}
