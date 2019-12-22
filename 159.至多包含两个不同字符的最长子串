@@ -1,0 +1,85 @@
+/*
+给定一个字符串 s ，找出 至多 包含两个不同字符的最长子串 t 。
+
+示例 1:
+
+输入: "eceba"
+输出: 3
+解释: t 是 "ece"，长度为3。
+示例 2:
+
+输入: "ccaabbb"
+输出: 5
+解释: t 是 "aabbb"，长度为5。
+
+*/
+
+/*
+方法一:双指针
+start指针指向第一个数,end指针依次右移,当不同字符数超过2时,计算长度,然后start指针右移,end从start下一个开始继续右移
+使用count保存不同个数,当第一个出现不同时,把tmp保存这时的字符
+这样之后的字符可以通过比较与tmp和start位置的字符都不同判断出此时的不同字符已经超过两个,直接break
+
+
+*/
+
+
+class Solution {
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        if(s.length() <= 1){
+            return s.length();
+        }
+        int max = 0;
+        for(int i = 0; i < s.length(); i++){
+            int count = 0;
+            int curLen = 1;
+            int j = i + 1;
+            char tmp = s.charAt(i);
+            while(j < s.length()){
+                if(s.charAt(j) != tmp && s.charAt(j) != s.charAt(i)){
+                    count++;
+                    if(count >= 2){
+                        break;
+                    }
+                    tmp = s.charAt(j);
+                }
+                j++;
+                curLen++;
+            }
+            max = Math.max(max, curLen);
+        }
+        return max;
+    }
+}
+
+/*
+方法二:滑动窗口+hashmap
+hashmap维持不同字符和对应坐标的映射
+使用滑动窗口算最大长度
+
+*/
+
+class Solution {
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        if(s.length() < 3){
+            return s.length();
+        }
+        int left = 0;
+        int right = 0;
+        int max = 0;
+        Map<Character, Integer> map = new HashMap<>();
+        while(right < s.length()){
+            if(map.size() < 3){
+                map.put(s.charAt(right), right);
+                right++;
+            }
+            if(map.size() == 3){
+                int tmpMin = Collections.min(map.values());
+                map.remove(s.charAt(tmpMin));
+                left = tmpMin + 1;
+            }
+            max = Math.max(max,right - left);
+        }
+        return max;
+    }
+}
