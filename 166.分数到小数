@@ -1,0 +1,60 @@
+/*
+给定两个整数，分别表示分数的分子 numerator 和分母 denominator，以字符串形式返回小数。
+
+如果小数部分为循环小数，则将循环的部分括在括号内。
+
+示例 1:
+
+输入: numerator = 1, denominator = 2
+输出: "0.5"
+示例 2:
+
+输入: numerator = 2, denominator = 1
+输出: "2"
+示例 3:
+
+输入: numerator = 2, denominator = 3
+输出: "0.(6)"
+
+*/
+
+/*
+方法一:模拟除法过程
+用hashmap记录每个小数位和对应的位置,当小数重复时直接在重复小数位置插入 "(" 然后在最后插入 ")"
+为了预防整形溢出 -2^31/-1 = 2^31 用long型做计算
+对符号位,使用numerator < 0 ^ denominator < 0 即一个为-一个为+结果才是负数(boolean型也可以进行异或运算)
+
+*/
+
+class Solution {
+    public String fractionToDecimal(int numerator, int denominator) {
+        if(numerator == 0){
+            return "0";
+        }
+        StringBuilder res = new StringBuilder();
+        if(numerator < 0 ^ denominator < 0){
+            res.append("-");
+        }
+        long dividend = Math.abs(Long.valueOf(numerator));
+        long divisor = Math.abs(Long.valueOf(denominator));
+        res.append(dividend/divisor);
+        long residual = dividend%divisor;
+        if(residual == 0){
+            return res.toString();
+        }
+        res.append(".");
+        Map<Long, Integer> map = new HashMap<>();
+        while(residual != 0){
+            if(map.containsKey(residual)){
+                res.insert(map.get(residual),"(");
+                res.append(")");
+                return res.toString();
+            }
+            map.put(residual, res.length());
+            residual *= 10;
+            res.append(residual/divisor);
+            residual %= divisor;
+        }
+        return res.toString();
+    }
+}
