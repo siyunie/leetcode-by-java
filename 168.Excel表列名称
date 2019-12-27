@@ -1,0 +1,47 @@
+/*
+给定一个正整数，返回它在 Excel 表中相对应的列名称。
+
+例如，
+
+    1 -> A
+    2 -> B
+    3 -> C
+    ...
+    26 -> Z
+    27 -> AA
+    28 -> AB 
+    ...
+示例 1:
+
+输入: 1
+输出: "A"
+示例 2:
+
+输入: 28
+输出: "AB"
+示例 3:
+
+输入: 701
+输出: "ZY"
+
+*/
+
+/*
+方法一:循环,反过来算
+先算最低位,即对其取余,然后一直头插,得到的就是正序的
+注意这里最重要的是每次循环开始时n--,因为A-Z对应1-26,但是用int+char型来表达时,int对应的是0-25,所以每次循环开始时n--就可以直接插入对应char型了
+n--之后等于是转换成了26进制运算
+
+*/
+
+class Solution {
+    public String convertToTitle(int n) {
+        StringBuilder strB = new StringBuilder();
+        while(n > 0){
+            n--;
+            strB.insert(0, (char)(n % 26 + 'A'));
+            n /= 26;
+        }
+        return strB.toString();
+    }
+}
