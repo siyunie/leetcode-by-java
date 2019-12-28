@@ -23,6 +23,8 @@
 方法一:临时表
 因为可能表只有一条数据,所以将其作为临时表,不存在会显示null
 
+*/
+
 SELECT (SELECT DISTINCT Salary from Employee ORDER BY Salary DESC LIMIT 1,1) AS SecondHighestSalary;
 
 //或
@@ -34,3 +36,11 @@ SELECT (SELECT DISTINCT Salary from Employee ORDER BY Salary DESC LIMIT 1,1) AS 
 */
 
 SELECT IFNULL((SELECT DISTINCT Salary from Employee ORDER BY Salary DESC LIMIT 1 OFFSET 1), NULL) AS SecondHighestSalary;
+
+/*
+方法三:GROUP BY 代替 DISTINCT去重
+
+*/
+
+SELECT (SELECT Salary from Employee GROUP BY Salary ORDER BY Salary DESC LIMIT 1 OFFSET 1) AS SecondHighestSalary;
+
