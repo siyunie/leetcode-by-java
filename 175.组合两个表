@@ -37,3 +37,6 @@ FirstName, LastName, City, State
 */
 
 select FirstName, LastName, City, State from Person left join Address on Person.PersonId = Address.PersonId;
+
+//或者
+//select Person.FirstName, Person.LastName, Address.City, Address.State from Person left join Address ON Person.PersonId = Address.PersonId;
