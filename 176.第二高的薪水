@@ -1,0 +1,36 @@
+/*
+
+编写一个 SQL 查询，获取 Employee 表中第二高的薪水（Salary） 。
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+例如上述 Employee 表，SQL查询应该返回 200 作为第二高的薪水。如果不存在第二高的薪水，那么查询应返回 null。
+
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+
+*/
+
+/*
+方法一:临时表
+因为可能表只有一条数据,所以将其作为临时表,不存在会显示null
+
+SELECT (SELECT DISTINCT Salary from Employee ORDER BY Salary DESC LIMIT 1,1) AS SecondHighestSalary;
+
+//或
+//SELECT (SELECT DISTINCT Salary from Employee ORDER BY Salary DESC LIMIT 1 OFFSET 1) AS SecondHighestSalary;
+
+/*
+方法二:IFNULL函数
+
+*/
+
+SELECT IFNULL((SELECT DISTINCT Salary from Employee ORDER BY Salary DESC LIMIT 1 OFFSET 1), NULL) AS SecondHighestSalary;
