@@ -1,0 +1,46 @@
+/*
+给定一组非负整数，重新排列它们的顺序使之组成一个最大的整数。
+
+示例 1:
+
+输入: [10,2]
+输出: 210
+示例 2:
+
+输入: [3,30,34,5,9]
+输出: 9534330
+说明: 输出结果可能非常大，所以你需要返回一个字符串而不是整数。
+
+*/
+
+/*
+方法一:自定义排序
+字典序排序,想到把原数组转换成字符串数组降序排序,但是有特殊情况
+比如3和30直接降序排序,结果是303,但是结果应该是330,因此重写compare方法时,将两个字符串相加再字典序排序,这时330>303正确排序
+同时有可能数组所有值都为0,此时排序结束后,判断最大值,即tmp[0]是否是0,是0直接输出0
+
+*/
+
+class Solution {
+    public String largestNumber(int[] nums) {
+        String[] tmp = new String[nums.length];  
+        for(int i = 0; i < nums.length; i++){
+            tmp[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(tmp, new Comparator<String>() {
+           public int compare(String o1, String o2){
+               String tmp1 = o1 + o2;
+               String tmp2 = o2 + o1;
+               return tmp2.compareTo(tmp1);
+           } 
+        });
+        if(tmp[0].equals("0")){
+            return "0";
+        }
+        StringBuilder strB = new StringBuilder();
+        for(String str: tmp){
+            strB.append(str);
+        }
+        return strB.toString();
+    }
+}
