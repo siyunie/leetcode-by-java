@@ -1,0 +1,74 @@
+/*
+给定一个字符串，逐个翻转字符串中的每个单词。
+
+示例：
+
+输入: ["t","h","e"," ","s","k","y"," ","i","s"," ","b","l","u","e"]
+输出: ["b","l","u","e"," ","i","s"," ","s","k","y"," ","t","h","e"]
+注意：
+
+单词的定义是不包含空格的一系列字符
+输入字符串中不会包含前置或尾随的空格
+单词与单词之间永远是以单个空格隔开的
+进阶：使用 O(1) 额外空间复杂度的原地解法。
+
+
+*/
+
+/*
+方法一:转换成string
+先不考虑进阶要求,直接转成String,然后按空格分开,反序拼接输出即可
+
+*/
+
+class Solution {
+    public void reverseWords(char[] s) {
+        String tmp = new String(s);
+        String[] words = tmp.split(" ");
+        StringBuilder strB = new StringBuilder();
+        for(int i = words.length - 1; i >= 0; i--){
+            strB.append(words[i]);
+            strB.append(" ");
+        }
+        strB.delete(s.length, s.length + 1);
+        char[] res = strB.toString().toCharArray();
+        for(int i = 0; i < res.length; i++){
+            s[i] = res[i];
+        }
+    }
+}
+
+/*
+方法二:双指针原地变换
+考虑到进阶要求空间复杂度为O(1),将数组准换成string之后直接原地倒序赋值
+使用双指针,left从原数组头开始,修改原数组值,right初始指向String尾部,遍历,维持一个count计算当前单词长度,当right指向的char为空格时,对left位置到往后count长度的原数组进行赋值
+
+*/
+
+class Solution {
+    public void reverseWords(char[] s) {
+        String tmp = new String(s);
+        int left = 0;
+        int right = tmp.length() - 1;
+        int count = 0;
+        while(right >= 0){
+            if(tmp.charAt(right) == ' '){
+                for(int i = 0; i < count; i++){
+                    s[left] = tmp.charAt(right + 1 + i);
+                    left++;
+                }
+                s[left] = ' ';
+                left++;
+                right--;
+                count = 0;
+            }else{
+                count++;
+                right--;
+            }
+        }
+        right++;
+        for(int i = 0; i < count; i++){
+            s[left + i] = tmp.charAt(right + i);
+        }
+    }
+}
