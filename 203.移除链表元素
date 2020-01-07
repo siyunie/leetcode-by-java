@@ -1,0 +1,66 @@
+/*
+删除链表中等于给定值 val 的所有节点。
+
+示例:
+
+输入: 1->2->6->3->4->5->6, val = 6
+输出: 1->2->3->4->5
+
+*/
+
+/*
+方法一:迭代
+
+*/
+
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        if(head == null){
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode tmp = dummy;
+        ListNode pre = dummy;
+        while(tmp != null){
+            tmp = tmp.next;
+            if(tmp != null && tmp.val == val){
+                while(tmp != null && tmp.val == val){
+                    tmp = tmp.next;
+                }
+                pre.next = tmp;
+            }
+            pre = tmp;
+        }
+        return dummy.next;
+    }
+}
+
+/*
+方法二:递归
+
+*/
+
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        if(head == null){
+            return null;
+        }
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode tmp = helper(dummy.next, val);
+        return tmp;
+    }
+
+    private ListNode helper(ListNode head, int val){
+        if(head == null){
+            return null;
+        }
+        ListNode next = helper(head.next, val);
+        if(head.val == val){
+            return next;
+        }
+        head.next = next;
+        return head;
+    }
+}
