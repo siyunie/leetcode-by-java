@@ -1,0 +1,76 @@
+/*
+给定两个字符串 s 和 t，判断它们是否是同构的。
+
+如果 s 中的字符可以被替换得到 t ，那么这两个字符串是同构的。
+
+所有出现的字符都必须用另一个字符替换，同时保留字符的顺序。两个字符不能映射到同一个字符上，但字符可以映射自己本身。
+
+示例 1:
+
+输入: s = "egg", t = "add"
+输出: true
+示例 2:
+
+输入: s = "foo", t = "bar"
+输出: false
+示例 3:
+
+输入: s = "paper", t = "title"
+输出: true
+说明:
+你可以假设 s 和 t 具有相同的长度。
+
+*/
+
+/*
+方法一:HashMap
+用两个hashmap存储s与t对应的映射,每次分别检查字符串s和t的当前字符在两个hashmap中是否存在key,如果存在则判断key对应的value是否是另一个字符串的当前字符
+
+*/
+
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        if(s.length() != t.length()){
+            return false;
+        }
+        Map<Character, Character> mapS = new HashMap<>();
+        Map<Character, Character> mapT = new HashMap<>();
+        for(int i = 0; i < s.length(); i++){
+            if(mapS.containsKey(s.charAt(i))){
+                if(mapS.get(s.charAt(i)) != t.charAt(i)){
+                    return false;
+                }
+            }else if(mapT.containsKey(t.charAt(i))){
+                if(mapT.get(t.charAt(i)) != s.charAt(i)){
+                    return false;
+                }
+            }else{
+                mapS.put(s.charAt(i), t.charAt(i));
+                mapT.put(t.charAt(i), s.charAt(i));
+            }
+        }
+        return true;
+    }
+}
+
+/*
+方法二:indexOf
+用indexOf判断当前字符串的第一个出现位置是否相同
+
+*/
+
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        if(s.length() != t.length()){
+            return false;
+        }
+        char[] charS = s.toCharArray();
+        char[] charT = t.toCharArray();
+        for(int i =0 ; i < s.length(); i++){
+            if(s.indexOf(charS[i]) != t.indexOf(charT[i])){
+                return false;
+            }
+        }
+        return true;
+    }
+}
