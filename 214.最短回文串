@@ -1,0 +1,57 @@
+/*
+给定一个字符串 s，你可以通过在字符串前面添加字符将其转换为回文串。找到并返回可以用这种方式转换的最短回文串。
+
+示例 1:
+
+输入: "aacecaaa"
+输出: "aaacecaaa"
+示例 2:
+
+输入: "abcd"
+输出: "dcbabcd"
+
+*/
+
+/*
+方法一:中心扩散
+
+*/
+
+class Solution {
+    public String shortestPalindrome(String s) {
+        if(s.length() == 0){
+            return "";
+        }
+        String res = "";
+        for(int i = 0; i <= s.length()/2; i++){
+            if(((i + 1)*2 - 1) <= s.length() && helper(s, i, i)){
+                String sub = s.substring(0, (i + 1)*2 - 1);
+                res = res.length() < sub.length() ? sub : res;
+            }
+            if((i + 1)*2 <= s.length() && helper(s, i, i + 1)){
+                String sub = s.substring(0, (i + 1)*2);
+                res = res.length() < sub.length() ? sub : res;
+            }
+        }
+        if(res.length() == s.length()){
+            return s;
+        }
+        String tmp = s.substring(res.length(), s.length());
+        StringBuilder strB = new StringBuilder(tmp).reverse();
+        return strB.append(res).append(tmp).toString();
+    }
+
+    private boolean helper(String s, int left, int right){
+        while(left >= 0){
+            if(right >= s.length()){
+                return false;
+            }
+            if(s.charAt(left) != s.charAt(right)){
+                return false;
+            }
+            left--;
+            right++;
+        }
+        return true;
+    }
+}
