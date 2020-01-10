@@ -1,0 +1,98 @@
+/*
+给定一个二维网格 board 和一个字典中的单词列表 words，找出所有同时在二维网格和字典中出现的单词。
+
+单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母在一个单词中不允许被重复使用。
+
+示例:
+
+输入: 
+words = ["oath","pea","eat","rain"] and board =
+[
+  ['o','a','a','n'],
+  ['e','t','a','e'],
+  ['i','h','k','r'],
+  ['i','f','l','v']
+]
+
+输出: ["eat","oath"]
+说明:
+你可以假设所有输入都由小写字母 a-z 组成。
+
+提示:
+
+你需要优化回溯算法以通过更大数据量的测试。你能否早点停止回溯？
+如果当前单词不存在于所有单词的前缀中，则可以立即停止回溯。什么样的数据结构可以有效地执行这样的操作？散列表是否可行？为什么？ 前缀树如何？如果你想学习如何实现一个基本的前缀树，请先查看这个问题： 实现Trie（前缀树）。
+
+*/
+
+/*
+方法一:前缀树+回溯
+构造前缀树,将words里的所有单词放进去,回溯寻找board里的所有可能,注意helper回溯函数中,当cur.leaf == true即找到结果并加入res之后不能直接停止return
+因为可能words里的单词是 ab abb abc 这样,当找到ab并添加之后要继续寻找直到cur == null才能回溯
+同时helper上下左右都走过之后,要状态重置,即memo[i][j] = false
+
+*/
+
+class Solution {
+    Set<String> res = new HashSet<>();
+    public List<String> findWords(char[][] board, String[] words) {
+        WordTrie trie = new WordTrie();
+        TrieNode root = trie.root;
+        for(String word: words){
+            trie.insert(word);
+        }
+
+        int row = board.length;
+        int col = board[0].length;
+        boolean[][] memo = new boolean[row][col];
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                helper(board, memo, i, j, row, col, root);
+            }
+        }
+        return new ArrayList<String>(res);
+    }
+
+    private void helper(char[][] board, boolean[][] memo, int i, int j, int row, int col,TrieNode cur){
+        if(i < 0 || i >= row || j < 0 || j >= col || memo[i][j]){
+            return;
+        }
+        cur = cur.child[board[i][j] - 'a'];
+        memo[i][j] = true;
+        if(cur == null){
+            memo[i][j] = false;
+            return;
+        }
+        if(cur.isLeaf){
+            res.add(cur.val);
+        }
+        helper(board, memo, i + 1, j, row, col, cur);
+        helper(board, memo, i - 1, j, row, col, cur);
+        helper(board, memo, i, j + 1, row, col, cur);
+        helper(board, memo, i, j - 1, row, col, cur);
+        memo[i][j] = false;
+    }
+}
+
+class WordTrie{
+    TrieNode root = new TrieNode();
+    public void insert(String s){
+        TrieNode cur = root;
+        for(char c: s.toCharArray()){
+            if(cur.child[c - 'a'] == null){
+                cur.child[c - 'a'] = new TrieNode();
+                cur = cur.child[c - 'a'];
+            }else{
+                cur = cur.child[c - 'a'];
+            }
+        }
+        cur.isLeaf = true;
+        cur.val = s;
+    }
+}
+
+class TrieNode{
+    String val;
+    TrieNode[] child = new TrieNode[26];
+    boolean isLeaf = false;
+}
