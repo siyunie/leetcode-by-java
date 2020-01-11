@@ -95,3 +95,35 @@ class Solution {
         return count;
     }
 }
+
+/*
+方法四:二分查找
+之前方法都没有利用满二叉树性质
+考虑求左右子树深度left与right,如果深度相同,说明左子树一定是满二叉树,节点数为(1<<left) - 1 加上根节点数即 (1<<left),再递归计算右子树节点个数即可
+如果深度不同,说明倒数第二层填满,但是最后一层的左子树不是满二叉树,此时右子树为满二叉树(只到倒数第二层) 同理右子树+根节点个数和为(1<<right) 然后再递归计算左子树节点个数即可
+
+*/
+
+class Solution {
+    public int countNodes(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        int left = countLevel(root.left);
+        int right = countLevel(root.right);
+        if(left == right){
+            return countNodes(root.right) + (1<<left);
+        }else{
+            return countNodes(root.left) + (1<<right);
+        }
+    }
+
+    private int countLevel(TreeNode root){
+        int level = 0;
+        while(root != null){
+            level++;
+            root = root.left;
+        }
+        return level;
+    }
+}
