@@ -1,0 +1,82 @@
+/*
+实现一个基本的计算器来计算一个简单的字符串表达式的值。
+
+字符串表达式可以包含左括号 ( ，右括号 )，加号 + ，减号 -，非负整数和空格  。
+
+示例 1:
+
+输入: "1 + 1"
+输出: 2
+示例 2:
+
+输入: " 2-1 + 2 "
+输出: 3
+示例 3:
+
+输入: "(1+(4+5+2)-3)+(6+8)"
+输出: 23
+说明：
+
+你可以假设所给定的表达式都是有效的。
+请不要使用内置的库函数 eval。
+
+*/
+
+/*
+方法一:栈
+用栈来保存当前符号需不需要反转,如果有括号,括号前面为-则后面都需反转运算符,当遇到左括号时判断前面的符号正负,加入对应的true or false
+为true则代表之后的运算符需要反转,遇到又括号时将最近的判断符移除,即stack.pop()
+res为被加/减数
+opr为加/减数
+op为运算符
+
+*/
+
+class Solution {
+    public int calculate(String s) {
+        Stack<Boolean> stack = new Stack<>();
+        int res = 0;//res为被加/减数
+        int opr = 0; //opr为加/减数
+        Character op = null; //op为运算符
+        for(char c: s.toCharArray()){
+            if(c == '+' || c == '-'){
+                if(op == null){//op还未赋值说明为第一个数,此时直接把opr赋给res
+                    res = opr;
+                }else{
+                    res = helper(op, res, opr);
+                }
+                op = swap(stack.isEmpty() ? false: stack.peek(), c);
+                opr = 0;
+            }else if(c == '('){
+                stack.push(op != null && op == '-');
+            }else if(c == ')'){
+                stack.pop();
+            }else if(c != ' '){
+                opr = opr*10 + c - '0';
+            }
+        }
+        if(op == null){
+            return opr;
+        }else{
+            return helper(op, res, opr);
+        }
+        
+    }
+    private int helper(char op, int i, int j){
+        if(op == '+'){
+            return i + j;
+        }else if(op == '-'){
+            return i - j;
+        }else{
+            return 0;
+        }
+    }
+
+    private char swap(boolean flag, char c){
+        if(flag){
+            return c == '+' ? '-' : '+';
+        }else{
+            return c;
+        }
+    }
+}
