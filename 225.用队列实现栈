@@ -1,0 +1,115 @@
+
+
+/*
+方法一:双向队列
+
+*/
+
+class MyStack {
+    Deque<Integer> deque;
+    /** Initialize your data structure here. */
+    public MyStack() {
+        deque = new LinkedList<Integer>();
+    }
+    
+    /** Push element x onto stack. */
+    public void push(int x) {
+        deque.offerFirst(x);
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        return deque.pollFirst();
+    }
+    
+    /** Get the top element. */
+    public int top() {
+        return deque.peekFirst();
+    }
+    
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return deque.isEmpty();
+    }
+}
+
+/*
+方法二:双队列
+双单向队列实现
+
+*/
+
+class MyStack {
+    Queue<Integer> a;
+    Queue<Integer> b;
+    /** Initialize your data structure here. */
+    public MyStack() {
+        a = new LinkedList<>();
+        b = new LinkedList<>();
+    }
+    
+    /** Push element x onto stack. */
+    public void push(int x) {
+        a.offer(x);
+        while(!b.isEmpty()){
+            a.offer(b.poll());
+        }
+        Queue tmp = a;
+        a = b;
+        b = tmp;
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        return b.poll();
+    }
+    
+    /** Get the top element. */
+    public int top() {
+        return b.peek();
+    }
+    
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return b.isEmpty();
+    }
+}
+
+/*
+方法三:一个单向队列实现栈
+push时依次poll()出除新加入元素外所有元素并offer()到队列尾部
+
+*/
+
+class MyStack {
+    Queue<Integer> a;
+    /** Initialize your data structure here. */
+    public MyStack() {
+        a = new LinkedList<>();
+    }
+    
+    /** Push element x onto stack. */
+    public void push(int x) {
+        a.offer(x);
+        int size = a.size();
+        while(size > 1){
+            a.offer(a.poll());
+            size--;
+        }
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        return a.poll();
+    }
+    
+    /** Get the top element. */
+    public int top() {
+        return a.peek();
+    }
+    
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return a.isEmpty();
+    }
+}
