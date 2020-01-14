@@ -1,0 +1,120 @@
+/*
+给定一个无重复元素的有序整数数组，返回数组区间范围的汇总。
+
+示例 1:
+
+输入: [0,1,2,4,5,7]
+输出: ["0->2","4->5","7"]
+解释: 0,1,2 可组成一个连续的区间; 4,5 可组成一个连续的区间。
+示例 2:
+
+输入: [0,2,3,4,6,8,9]
+输出: ["0","2->4","6","8->9"]
+解释: 2,3,4 可组成一个连续的区间; 8,9 可组成一个连续的区间。
+
+*/
+
+/*
+方法一:双指针
+双指针遍历
+对临界条件做判断,即到最后一位时,此时的right - 1与left是否相同 相同则说明只是单独的数,直接添加,否则需要添加left - > right - 1
+同理每一次非最后指针跳出时,即非right == nums.length 跳出,而是 nums[right] != nums[right] - 1 导致跳出时 同样需要判断 left == right - 1
+相等则说明只有一个数,否则要添加范围left - > right - 1
+
+*/
+
+class Solution {
+    public List<String> summaryRanges(int[] nums) {
+        List<String> list = new ArrayList<>();
+        if(nums.length == 0){
+            return list;
+        }else if(nums.length == 1){
+            list.add(String.valueOf(nums[0]));
+            return list;
+        }
+        int left = 0;
+        int right = 0;
+        while(right < nums.length){
+            StringBuilder strB = new StringBuilder();
+            strB.append(nums[left]);
+            right++;
+            while(right < nums.length && nums[right] == nums[right - 1] + 1){
+                right++;
+            }
+            if(right == nums.length && (right - 1) != left){
+                strB.append("->");
+                strB.append(nums[right - 1]);
+                list.add(strB.toString());
+                return list;
+            }else if(right == nums.length){
+                list.add(strB.toString());
+                return list;
+            }
+            if(right == left + 1){
+                list.add(strB.toString());
+            }else{
+                strB.append("->");
+                strB.append(nums[right - 1]);
+                list.add(strB.toString());
+            }
+            left = right;
+        }
+        return list;
+    }
+}
+
+
+/*
+方法二:双指针另一种实现
+
+*/
+
+class Solution {
+    public List<String> summaryRanges(int[] nums) {
+        List<String> list = new ArrayList<>();
+        for(int i = 0, j = 0; j < nums.length; j++){
+            if(j + 1 < nums.length && nums[j + 1] == nums[j] + 1){
+                continue;
+            }
+            if(i == j){
+                list.add(String.valueOf(nums[i]));
+            }else{
+                StringBuilder strB = new StringBuilder();
+                strB.append(nums[i]);
+                strB.append("->");
+                strB.append(nums[j]);
+                list.add(strB.toString());
+            }
+            i = j + 1;
+        }
+        return list;
+    }
+}
+
+
+/*
+方法三:双指针第三种实现
+
+*/
+
+class Solution {
+    public List<String> summaryRanges(int[] nums) {
+        List<String> list = new ArrayList<>();
+        for(int i = 0, j = 0; j < nums.length; j++){
+            i = j;
+            while((j + 1) < nums.length && nums[j + 1] == nums[j] + 1){
+                j++;
+            }
+            if(i == j){
+                list.add(String.valueOf(nums[i]));
+            }else{
+                StringBuilder strB = new StringBuilder();
+                strB.append(nums[i]);
+                strB.append("->");
+                strB.append(nums[j]);
+                list.add(strB.toString());
+            }
+        }
+        return list;
+    }
+}
