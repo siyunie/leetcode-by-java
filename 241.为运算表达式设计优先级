@@ -1,0 +1,101 @@
+/*
+给定一个含有数字和运算符的字符串，为表达式添加括号，改变其运算优先级以求出不同的结果。你需要给出所有可能的组合的结果。有效的运算符号包含 +, - 以及 * 。
+
+示例 1:
+
+输入: "2-1-1"
+输出: [0, 2]
+解释: 
+((2-1)-1) = 0 
+(2-(1-1)) = 2
+示例 2:
+
+输入: "2*3-4*5"
+输出: [-34, -14, -10, -10, 10]
+解释: 
+(2*(3-(4*5))) = -34 
+((2*3)-(4*5)) = -14 
+((2*(3-4))*5) = -10 
+(2*((3-4)*5)) = -10 
+(((2*3)-4)*5) = 10
+
+*/
+
+/*
+方法一:分治法
+将字符串按运算符分隔,直到无运算符为止,分开计算两边的值,然后合并
+分开计算两边的值,即类似对左边和右边分别加了括号
+
+*/
+
+class Solution {
+    public List<Integer> diffWaysToCompute(String input) {
+        return helper(input);
+    }
+    
+    private List<Integer> helper(String input){
+        List<Integer> list = new ArrayList<>();
+        if(input == null || input.length() == 0){
+            return list;
+        }
+        if(!input.contains("+") && !input.contains("-") && !input.contains("*")){
+            list.add(Integer.valueOf(input));
+            return list;
+        }
+        for(int i = 0; i < input.length(); i++){
+            if(input.charAt(i) == '+' || input.charAt(i) == '-' || input.charAt(i) == '*'){
+                for(Integer left: helper(input.substring(0, i))){
+                    for(Integer right: helper(input.substring(i + 1))){
+                        if(input.charAt(i) == '+'){
+                            list.add(left + right);
+                        }else if(input.charAt(i) == '-'){
+                            list.add(left - right);
+                        }else if(input.charAt(i) == '*'){
+                            list.add(left * right);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    } 
+}
+
+/*
+方法二:分治法+记忆
+避免有重复字符串 如 1+2+3 + 1+2+3 这样 用map记录,如果发现之前有过相同的字符串,直接返回对应list, 可以稍微提升性能,
+
+*/
+
+class Solution {
+    Map<String, List<Integer>> map = new HashMap<>();
+    public List<Integer> diffWaysToCompute(String input) {
+        if(map.containsKey(input)){
+            return map.get(input);
+        }
+        List<Integer> list = new ArrayList<>();
+        if(!input.contains("+") && !input.contains("-") && !input.contains("*")){
+            list.add(Integer.valueOf(input));
+            map.put(input, list);
+            return list;
+        }
+        for(int i = 0; i < input.length(); i++){
+            if(input.charAt(i) == '+' || input.charAt(i) == '-' || input.charAt(i) == '*'){
+                List<Integer> leftList = diffWaysToCompute(input.substring(0, i));
+                List<Integer> rightList = diffWaysToCompute(input.substring(i + 1));
+                for(Integer left: leftList){
+                    for(Integer right: rightList){
+                        if(input.charAt(i) == '+'){
+                            list.add(left + right);
+                        }else if(input.charAt(i) == '-'){
+                            list.add(left - right);
+                        }else{
+                            list.add(left * right);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+}
