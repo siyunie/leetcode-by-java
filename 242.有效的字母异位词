@@ -1,0 +1,75 @@
+/*
+给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+
+示例 1:
+
+输入: s = "anagram", t = "nagaram"
+输出: true
+示例 2:
+
+输入: s = "rat", t = "car"
+输出: false
+说明:
+你可以假设字符串只包含小写字母。
+
+进阶:
+如果输入字符串包含 unicode 字符怎么办？你能否调整你的解法来应对这种情况？
+
+*/
+
+/*
+方法一:HashMap
+此方法也适用于进阶要求,如果传入unicode字符,使用HashMap也没问题
+
+*/
+
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length() != t.length()){
+            return false;
+        }
+        Map<Character, Integer> map = new HashMap<>();
+        for(char c: s.toCharArray()){
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        for(char c: t.toCharArray()){
+            if(!map.containsKey(c)){
+                return false;
+            }
+            map.put(c, map.get(c) - 1);
+        }
+        Iterator iter = map.entrySet().iterator();
+        while(iter.hasNext()){
+            Map.Entry entry = (Map.Entry)iter.next();
+            if((Integer)entry.getValue() != 0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/*
+方法二:用数组来实现HashMap功能
+此方法不适用于进阶要求,因为如果要传入unicode的话,申请的数组太大
+
+*/
+
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length() != t.length()){
+            return false;
+        }
+        int[] memo = new int[26];
+        for(int i = 0; i < s.length(); i++){
+            memo[s.charAt(i) - 'a']++;
+        }
+        for(int i = 0; i < t.length(); i++){
+            memo[t.charAt(i) - 'a']--;
+            if(memo[t.charAt(i) - 'a'] < 0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
