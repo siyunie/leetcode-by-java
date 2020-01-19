@@ -1,0 +1,84 @@
+/*
+请设计一个类，使该类的构造函数能够接收一个单词列表。然后再实现一个方法，该方法能够分别接收两个单词 word1 和 word2，并返回列表中这两个单词之间的最短距离。您的方法将被以不同的参数调用 多次。
+
+示例:
+假设 words = ["practice", "makes", "perfect", "coding", "makes"]
+
+输入: word1 = “coding”, word2 = “practice”
+输出: 3
+输入: word1 = "makes", word2 = "coding"
+输出: 1
+注意:
+你可以假设 word1 不等于 word2, 并且 word1 和 word2 都在列表里。
+
+*/
+
+/*
+方法一:HashMap
+直接按243方法做,每次都循环一遍找结果超时,因为这个方法会被多次调用,所以考虑使用HashMap
+使用一个HashMap储存所有字符串和对应的下标位置, 对目标字符串 word1,word2,取出对应两个下标数组,双层循环遍历找最小距离
+
+*/
+
+class WordDistance {
+    Map<String, ArrayList<Integer>> map;
+    public WordDistance(String[] words) {
+        map = new HashMap<>();
+        for(int i = 0; i < words.length; i++){
+            ArrayList<Integer> list = map.getOrDefault(words[i], new ArrayList<Integer>());
+            list.add(i);
+            map.put(words[i], list);
+        }
+    }
+    
+    public int shortest(String word1, String word2) {
+        ArrayList<Integer> list1 = map.get(word1);
+        ArrayList<Integer> list2 = map.get(word2);
+        int minDistance = Integer.MAX_VALUE;
+        for(Integer i: list1){
+            for(Integer j: list2){
+                minDistance = Math.min(minDistance, Math.abs(i - j));
+            }
+        }
+        return minDistance;
+    }
+}
+
+/*
+方法二:对方法一进行优化 双指针
+对方法一的找到对应目标字符串的list之后,寻找最短距离过程进行优化
+维持双指针left = 0; right = 0;
+因为放入下标的过程是在一次遍历,所以取出的list一定是有序的,因此当list1.get(left) < list2.get(right) 时,只有left++才有可能得到更小的结果
+反之,right++才有可能得到更小的结果,因此在一次遍历中就能得到最小距离,遍历直到left或right大于对应数组长度时终止
+因为当对应的数组的某指针在后部时,一定会先移动另一个指针向前,所以当某个指针大于对应数组长度并终止时一定能得到所有可能的最小值
+
+*/
+
+class WordDistance {
+    Map<String, ArrayList<Integer>> map;
+    public WordDistance(String[] words) {
+        map = new HashMap<>();
+        for(int i = 0; i < words.length; i++){
+            ArrayList<Integer> list = map.getOrDefault(words[i], new ArrayList<Integer>());
+            list.add(i);
+            map.put(words[i], list);
+        }
+    }
+    
+    public int shortest(String word1, String word2) {
+        ArrayList<Integer> list1 = map.get(word1);
+        ArrayList<Integer> list2 = map.get(word2);
+        int left = 0;
+        int right = 0;
+        int minDistance = Integer.MAX_VALUE;
+        while(left < list1.size() && right < list2.size()){
+            minDistance = Math.min(minDistance, Math.abs(list1.get(left) - list2.get(right)));
+            if(list1.get(left) < list2.get(right)){
+                left++;
+            }else{
+                right++;
+            }
+        }
+        return minDistance;
+    }
+}
