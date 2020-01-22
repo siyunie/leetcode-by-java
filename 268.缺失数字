@@ -1,0 +1,53 @@
+/*
+给定一个包含 0, 1, 2, ..., n 中 n 个数的序列，找出 0 .. n 中没有出现在序列中的那个数。
+
+示例 1:
+
+输入: [3,0,1]
+输出: 2
+示例 2:
+
+输入: [9,6,4,2,3,5,7,0,1]
+输出: 8
+说明:
+你的算法应具有线性时间复杂度。你能否仅使用额外常数空间来实现?
+
+*/
+
+/*
+方法一:HashSet
+考虑到线性时间复杂度,直接排序肯定不行,考虑空间换时间,用HashSet,遍历两遍,第一遍放值,第二遍检查是否存在
+
+*/
+
+class Solution {
+    public int missingNumber(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for(int i = 0; i < nums.length; i++){
+            set.add(nums[i]);
+        }
+        for(int i = 0; i <= nums.length; i++){
+            if(!set.contains(i)){
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+/*
+方法二:位运算
+考虑到常数空间复杂度要求,考虑位运算
+因为数组长度为n 0到n中有一个数没出现,其余每个数都出现一次,因此将0到n所有数求异或,得到的值在和nums中所有数求异或,出现过的数等于自己异或自己,结果为0
+最后剩下的就是那个0到n中没出现得那个数,即需要的结果
+
+*/
+
+class Solution {
+    public int missingNumber(int[] nums) {
+        int res = nums.length;
+        for(int i = 0; i < nums.length; i++){
+            res = res ^ i ^ nums[i];
+        }
+        return res;
+    }
+}
