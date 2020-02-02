@@ -69,3 +69,33 @@ class Solution {
         return max;
     }
 }
+
+/*
+方法三:双指针 滑动窗口
+用双指针来维持滑动窗口,保证滑动串口内无重复字符
+每次right++时,从尾至头判断right处字符是否在滑动窗口内存在,如存在则将left置为滑动窗口内与right处字符相同的字符的下标+1,保证滑动窗口内无重复字符,然后跳出循环
+每次更新指针时,更新最大窗口值,即res = Math.max(res, right - left + 1)
+
+*/
+
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if(s.length() <= 1){
+            return s.length();
+        }
+        int res = 1;
+        int left = 0;
+        int right = 1;
+        while(right < s.length() && left < right){
+            for(int i = right - 1; i >= left; i--){
+                if(s.charAt(right) == s.charAt(i)){
+                    left = i + 1;
+                    break;
+                }
+            }
+            res = Math.max(res, right - left + 1);
+            right++;
+        }
+        return res;
+    }
+}
