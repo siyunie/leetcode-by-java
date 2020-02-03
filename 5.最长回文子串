@@ -87,7 +87,7 @@ class Solution {
     }
 }
 
-//中心扩展
+//中心扩展,注意substring(i, j)是包含i不包含j的子串,所以算出子串右位置后要+1
 
 class Solution {
     public String longestPalindrome(String s) {
@@ -124,3 +124,46 @@ class Solution {
         return right - left + 1;
     }
 }
+
+//改进,不用每次更新res字符串,只用使用left和right指针记录子串左右坐标,遍历完成后再substring即可
+
+class Solution {
+    public String longestPalindrome(String s) {
+        if(s.length() <= 1){
+            return s;
+        }
+        int maxLen = 0;
+        String res = "";
+        int left = 0;
+        int right = 0;
+        for(int i = 0; i < s.length() - 1; i++){
+            int tmp1 = helper(s, i, i);
+            int tmp2 = helper(s, i, i + 1);
+            if(tmp1 > maxLen){
+                maxLen = tmp1;
+                left = i - tmp1/2;
+                right = i + tmp1/2;
+            }
+            if(tmp2 > maxLen){
+                maxLen = tmp2;
+                left = i - tmp2/2 + 1;
+                right = i + tmp2/2;
+            }
+        }
+        return s.substring(left, right + 1);
+    }
+
+    private int helper(String s, int left, int right){
+        while(left >= 0 && right < s.length()){
+            if(s.charAt(left) != s.charAt(right)){
+                break;
+            }
+            left--;
+            right++;
+        }
+        left++;
+        right--;
+        return right - left + 1;
+    }
+}
+
