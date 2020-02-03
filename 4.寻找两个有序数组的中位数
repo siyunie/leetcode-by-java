@@ -64,3 +64,45 @@ class Solution {
         return list;
     }
 }
+
+
+/*
+方法二:双指针遍历
+时间复杂度不符合要求
+一开始考虑合并两个数组,然后直接找中位数,但是这样需要额外的空间,所以直接双指针移动找中位数,注意时间复杂度为O(m + n)不符合题目要求
+分两种情况,数组之和的长度为奇数和偶数,为奇数时需要找(len + 1)/2个数即为中位数,因此遍历时需要循环len/2 + 1, 即从0开始,一直到len/2
+比如长度为3,指针需要移动一次,因此循环两遍(因为第一次循环未移动指针)
+长度之和为偶数时, 需要找len/2 和 len/2 + 1个数,同样需要遍历len/2 + 1次,只不过需要直到前一次遍历的结果,因此用pre保存上一轮的结果,cur保存本轮结果
+每次循环开始时,将cur赋给pre即可
+因此长度为奇数和偶数的情况循环可以一起写,避免太复杂
+
+循环中,当p1 < m并且满足 p2 >= n即p2已经越界或者 nums[p1] < nums[p2]时移动p1,相反情况移动p2
+此处相反情况即为 p1 >= m || (p2 < n && nums1[p1] >= nums[p2])即p1越界或者,在p2不越界的情况下,p2的值小于等于p1
+
+最后判断长度是奇数还是偶数,决定返回值为pre与cur的平均数还是直接返回cur
+
+*/
+
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        int pre = 0;
+        int cur = 0;
+        int p1 = 0;
+        int p2 = 0;
+        for(int i = 0; i <= (m + n)/2; i++){
+            pre = cur;
+            if(p1 < m && (p2 >= n || nums1[p1] < nums2[p2])){
+                cur = nums1[p1++];
+            }else{
+                cur = nums2[p2++];
+            }
+        }
+        if(((m + n) & 1) == 0){
+            return (double)(pre + cur)/2;
+        }else{
+            return (double)cur;
+        }
+    }
+}
