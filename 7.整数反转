@@ -44,7 +44,16 @@ class Solution {
 
 
 
-//方法2
+/*方法2 
+因为可能溢出的情况x一定为32位,并且因为x为int, 所以开头一定为1 2 -1 -2中的一个,因此最后一次取余相加时,最后一次temp的结果一定为1 2 -1 -2中的一个
+因为整型最大值是2147483647，最小值是-2147483648 所以最后一次 + temp 一定不会出现 > 7 或者 <-8导致溢出
+因此不需要判断
+(iter == Integer.MAX_VALUE / 10 && temp > 7)) return 0;
+或
+(iter == Integer.MAX_VALUE / 10 && temp < -8)) return 0;
+
+*/
+
 class Solution {
     public int reverse(int x) {
         if(x==0){
