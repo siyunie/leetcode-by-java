@@ -86,3 +86,41 @@ class Solution {
         return right-left-1;
     }
 }
+
+//中心扩展
+
+class Solution {
+    public String longestPalindrome(String s) {
+        if(s.length() <= 1){
+            return s;
+        }
+        int maxLen = 0;
+        String res = "";
+        for(int i = 0; i < s.length() - 1; i++){
+            int tmp1 = helper(s, i, i);
+            int tmp2 = helper(s, i, i + 1);
+            if(tmp1 > maxLen){
+                maxLen = tmp1;
+                res = s.substring(i - tmp1/2, i + tmp1/2 + 1);
+            }
+            if(tmp2 > maxLen){
+                maxLen = tmp2;
+                res = s.substring(i - tmp2/2 + 1, i + tmp2/2 + 1);
+            }
+        }
+        return res;
+    }
+
+    private int helper(String s, int left, int right){
+        while(left >= 0 && right < s.length()){
+            if(s.charAt(left) != s.charAt(right)){
+                break;
+            }
+            left--;
+            right++;
+        }
+        left++;
+        right--;
+        return right - left + 1;
+    }
+}
