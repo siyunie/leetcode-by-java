@@ -110,3 +110,43 @@ class Solution {
         return res;
     }
 }
+
+//方法二改进, switch代替HashMap实现方法二
+
+class Solution {
+    public int romanToInt(String s) {
+        int cur = helper(s.charAt(0));
+        int pre = 0;
+        int res = cur;
+        for(int i = 1; i < s.length(); i++){
+            pre = cur;
+            cur = helper(s.charAt(i));
+            if(cur > pre){
+                res -= 2 * pre;
+            }
+            res += cur;
+        }
+        return res;
+    }
+
+    private int helper(char i){
+        switch(i){
+            case 'M':
+                return 1000;
+            case 'D':
+                return 500;
+            case 'C':
+                return 100;
+            case 'L':
+                return 50;
+            case 'X':
+                return 10;
+            case 'V':
+                return 5;
+            case 'I':
+                return 1;
+            default:
+                return 0;
+        }
+    }
+}
