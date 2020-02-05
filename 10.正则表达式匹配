@@ -46,7 +46,7 @@ p = "mis*is*p*."
 */
 
 /*
-方法一：回溯递归
+方法一：递归
 考虑到如果没有*，结果就非常简单
 如果有*，一定有前一个数，并与前一个数组成组合
 可以分为两种情况，第一直接忽略这个组合，然后继续匹配s与p.substring(2)。第二前一个数匹配，即firstMatch,然后继续匹配s.substring(1),p
@@ -64,6 +64,26 @@ class Solution {
             return isMatch(s,p.substring(2))||(firstMatch&&isMatch(s.substring(1),p));
         }else{
             return firstMatch&&isMatch(s.substring(1),p.substring(1));
+        }
+    }
+}
+
+
+//方法一改进
+class Solution {
+    public boolean isMatch(String s, String p) {
+        return helper(s, 0, p, 0);
+    }
+
+    private boolean helper(String s, int i, String p, int j){
+        if(j == p.length()){
+            return i == s.length();
+        }
+        boolean flag = i != s.length() && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.');
+        if(p.length() - j >= 2 && p.charAt(j + 1) =='*'){
+            return helper(s, i, p, j + 2) || (flag && helper(s, i + 1, p, j));
+        }else{
+            return flag && helper(s, i + 1, p, j + 1);
         }
     }
 }
