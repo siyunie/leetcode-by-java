@@ -1,5 +1,5 @@
 /*
-给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' *的正则表达式匹配。
+给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
 
 '.' 匹配任意单个字符
 '*' 匹配零个或多个前面的那一个元素
@@ -43,15 +43,17 @@ p = "c*a*b"
 s = "mississippi"
 p = "mis*is*p*."
 输出: false
+
 */
 
 /*
-方法一：递归
+方法一递归
 考虑到如果没有*，结果就非常简单
 如果有*，一定有前一个数，并与前一个数组成组合
 可以分为两种情况，第一直接忽略这个组合，然后继续匹配s与p.substring(2)。第二前一个数匹配，即firstMatch,然后继续匹配s.substring(1),p
 这两种情况满足其中之一就可以
 注意需要考虑p与s匹配后为空的情况，如果p为空s必然为空，但是反之不成立，即s为空p不一定为空，因为*可以匹配0个
+
 */
 
 class Solution {
@@ -93,7 +95,6 @@ class Solution {
 
 */
 
-
 class Solution {
     public boolean isMatch(String s, String p) {
         boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
@@ -117,5 +118,3 @@ class Solution {
         return dp[s.length()][p.length()];
     }
 }
-
-
