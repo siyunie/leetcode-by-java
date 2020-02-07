@@ -33,7 +33,7 @@
 /*
 方法一：使用stack，peek出栈顶元素，与新元素match就pop出来，不然就把新元素push进栈，最后判断是否为空
 优化判断1. 当string长度为奇数，直接输出false 
-       2.当栈深度大于字符串的一般，直接输出false
+       2.当栈深度大于字符串的一半，直接输出false
 */
 
 import java.util.Stack;
@@ -63,5 +63,37 @@ class Solution {
         }else{
             return false;
         }
+    }
+}
+
+//
+
+class Solution {
+    public boolean isValid(String s) {
+        if(s.length() == 0){
+            return true;
+        }
+        if(s.length() % 2 != 0){
+            return false;
+        }
+        Stack<Character> stack = new Stack<>();
+        Map<Character, Character> map = new HashMap<Character, Character>(){{
+            put('(', ')');
+            put('[', ']');
+            put('{','}');
+        }};
+        for(char cha: s.toCharArray()){
+            if(stack.size() > s.length() / 2){
+                return false;
+            }
+            if(cha == '[' || cha == '{' || cha == '('){
+                stack.push(cha);
+            }else{
+                if(stack.isEmpty() || map.get(stack.pop()) != cha){
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
     }
 }
