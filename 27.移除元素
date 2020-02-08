@@ -84,3 +84,24 @@ class Solution {
         return i;
     }
 }
+
+//方法二另一种写法
+
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        if(nums.length == 0){
+            return 0;
+        }
+        int right = nums.length - 1;
+        int left = 0;
+        while(left < right){
+            if(nums[left] == val){
+                nums[left] = nums[right];
+                right--;
+            }else{
+                left++;
+            }
+        }
+        return nums[left] == val ? left : left + 1;
+    }
+}
