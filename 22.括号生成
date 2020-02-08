@@ -65,7 +65,7 @@ class Solution {
     }
 }
 
-//用StringBuilder来实现方法二
+//用StringBuilder来实现方法二,这种StringBuilder来实现才是标准回溯法,因为有回溯重置过程
 
 class Solution {
     List<String> list;
