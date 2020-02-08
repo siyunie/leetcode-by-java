@@ -65,3 +65,47 @@ class Solution {
         return head;
     }
 }
+
+/*
+方法二:小顶堆
+维持一个小顶堆,放入数组所有的节点,每次poll()出堆顶ListNode,当作下一个节点,并判断有无next节点,有的话将next节点加入堆中
+
+*/
+
+
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if(lists.length == 0){
+            return null;
+        }
+        if(lists.length == 1){
+            return lists[0];
+        }
+        PriorityQueue<ListNode> queue = new PriorityQueue<>(new Comparator<ListNode>(){   //或者 PriorityQueue<ListNode> queue = new PriorityQueue<>((n1, n2) -> (n1.val - n2.val));
+            public int compare(ListNode l1, ListNode l2){
+                return l1.val - l2.val;
+            }
+        });
+        for(ListNode l: lists){
+            if(l != null){
+                queue.offer(l);
+            }
+        }
+        ListNode dummy = new ListNode(0);
+        ListNode cur = dummy;
+        while(queue.size() != 0){
+            ListNode tmp = queue.poll();
+            cur.next = tmp;
+            cur = cur.next;
+            if(tmp.next != null){
+                queue.offer(tmp.next);
+            }
+        }
+        return dummy.next;
+    }
+}
+
+
+
+
+
