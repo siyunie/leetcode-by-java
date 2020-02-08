@@ -64,3 +64,28 @@ class Solution {
         }
     }
 }
+
+//用StringBuilder来实现方法二
+
+class Solution {
+    List<String> list;
+    public List<String> generateParenthesis(int n) {
+        list = new ArrayList<>();
+        backtrack(n, 0, 0, new StringBuilder());
+        return list;
+    }
+    private void backtrack(int n, int left, int right, StringBuilder tmp){
+        if(left > n || right > n){
+            return;
+        }
+        if(left == n && right == n){
+            list.add(tmp.toString());
+        }
+        if(left >= right){
+            backtrack(n, left + 1, right, tmp.append('('));
+            tmp.deleteCharAt(tmp.length() - 1);
+            backtrack(n, left, right + 1, tmp.append(')'));
+            tmp.deleteCharAt(tmp.length() - 1);
+        }
+    }
+}
