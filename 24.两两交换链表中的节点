@@ -34,6 +34,31 @@ class Solution {
     }
 }
 
+//方法一更清晰实现 四个节点 preHead pre cur next 每次交换pre和cur即可
+
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        if(head == null || head.next == null){
+            return head;
+        }
+        ListNode pre = head;
+        ListNode dummy = new ListNode(0);
+        ListNode preHead = dummy;
+        preHead.next = head;
+        while(pre != null && pre.next != null){
+            ListNode cur = pre.next;
+            ListNode next = cur.next;
+            pre.next = next;
+            cur.next = pre;
+            preHead.next = cur;
+            preHead = pre;
+            pre = next;
+        }
+        return dummy.next;
+    }
+}
+
+
 /*
 方法二:递归
 
