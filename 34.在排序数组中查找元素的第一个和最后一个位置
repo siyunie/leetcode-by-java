@@ -54,3 +54,43 @@ class Solution {
         return low;     
     }
 }
+
+//另一种写法
+
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int[] res = new int[2];
+        if(nums.length == 0){
+            return new int[]{-1, -1};
+        }
+        res[0] = binarySearch(nums, 0, nums.length - 1, target, false);
+        res[1] = binarySearch(nums, 0, nums.length - 1, target, true);
+        return res;
+    }
+
+    private int binarySearch(int[] nums, int left, int right, int target, boolean flag){
+        while(left < right){
+            int mid = (left + right) >>> 1;
+            if(nums[mid] == target){
+                if(!flag){
+                    if(mid == 0 || nums[mid - 1] != target){
+                        return mid;
+                    }else{
+                        right = mid - 1;
+                    }
+                }else{
+                    if(mid == nums.length - 1 || nums[mid + 1] != target){
+                        return mid;
+                    }else{
+                        left = mid + 1;
+                    }
+                }
+            }else if(nums[mid] > target){
+                right = mid - 1;
+            }else{
+                left = mid + 1;
+            }
+        } 
+        return nums[left] == target ? left : -1;
+    }
+}
