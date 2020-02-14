@@ -78,3 +78,55 @@ class Solution {
         return false;
     }
 }
+
+//回溯法写法二
+
+class Solution {
+    public void solveSudoku(char[][] board) {
+        boolean[][] row = new boolean[9][9];
+        boolean[][] col = new boolean[9][9];
+        boolean[][] block = new boolean[9][9];
+        for(int i = 0; i < 9; i++){
+            for(int j = 0; j < 9; j++){
+                if(board[i][j] != '.'){
+                    int num = board[i][j] - '1';
+                    row[i][num] = true;
+                    col[j][num] = true;
+                    block[(i/3)*3 + j/3][num] = true;
+                }
+            }
+        }
+        traceback(board, 0, 0, row, col, block);
+    }
+
+    private boolean traceback(char[][] board, int i , int j, boolean[][] row, boolean[][] col, boolean[][] block){
+        while(board[i][j] != '.'){
+            j++;
+            if(j == 9){
+                j = 0;
+                i++;
+            }
+            if(i == 9){
+                return true;
+            }
+        }
+        for(int num = 0; num <= 8; num++){
+            int tmp = (i/3)*3 + j/3;
+            if(!row[i][num] && !col[j][num] && !block[tmp][num]){
+                row[i][num] = true;
+                col[j][num] = true;
+                block[tmp][num] = true;
+                board[i][j] = (char) ('1' + num);
+                boolean res = traceback(board, i, j, row, col, block);
+                if(res){
+                    return true;
+                }
+                row[i][num] = false;
+                col[j][num] = false;
+                block[tmp][num] = false;
+                board[i][j] = '.';
+            }
+        }
+        return false;
+    }
+}
