@@ -48,3 +48,73 @@ class Solution {
         }
     }
 }
+
+
+//另一种写法
+
+class Solution {
+    List<List<Integer>> list;
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        list = new ArrayList<>();
+        boolean[] flag = new boolean[nums.length];
+        backtrack(nums, flag, 0, new Stack<Integer>());
+        return list;
+    }
+
+    private void backtrack(int[] nums, boolean[] flag, int count, Stack<Integer> stack){
+        if(count == nums.length){
+            list.add(new ArrayList<>(stack));
+            return;
+        }
+        for(int i = 0; i < nums.length; i++){
+            if(flag[i]){
+                continue;
+            }
+            if(i > 0 && nums[i] == nums[i - 1] && !flag[i - 1]){
+                continue;
+            }
+            stack.push(nums[i]);
+            flag[i] = true;
+            backtrack(nums, flag, count + 1, stack);
+            flag[i] = false;
+            stack.pop();
+        }
+    }
+}
+
+/*
+方法二:set去重
+不用考虑在添加时避免重复,直接放入set里自动去重,nums也就不用排序了
+此法时间复杂度高
+
+*/
+
+class Solution {
+    List<List<Integer>> list;
+    Set<List<Integer>> set;
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        set = new HashSet<>();
+        boolean[] flag = new boolean[nums.length];
+        backtrack(nums, flag, 0, new Stack<Integer>());
+        list = new ArrayList<>(set);
+        return list;
+    }
+
+    private void backtrack(int[] nums, boolean[] flag, int count, Stack<Integer> stack){
+        if(count == nums.length){
+            set.add(new ArrayList<>(stack));
+            return;
+        }
+        for(int i = 0; i < nums.length; i++){
+            if(flag[i]){
+                continue;
+            }
+            stack.push(nums[i]);
+            flag[i] = true;
+            backtrack(nums, flag, count + 1, stack);
+            flag[i] = false;
+            stack.pop();
+        }
+    }
+}
