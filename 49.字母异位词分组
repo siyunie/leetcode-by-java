@@ -57,3 +57,30 @@ class Solution {
         return new ArrayList<>(map.values());
     }
 }
+
+
+/*
+方法二:使用int数组保存结果,最后拼接成字符串作为map的key,避免排序
+
+*/
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String str: strs){
+            int[] intArr = new int[26];
+            for(char cha: str.toCharArray()){
+                intArr[cha - 'a']++;
+            }
+            StringBuilder strb = new StringBuilder();
+            for(int num: intArr){
+                strb.append(num);
+            }
+            String tmpStr = strb.toString();
+            List<String> list = map.getOrDefault(tmpStr, new ArrayList<>());
+            list.add(str);
+            map.put(tmpStr, list);
+        }
+        return new ArrayList<>(map.values());
+    }
+}
