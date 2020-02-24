@@ -40,3 +40,20 @@ class Solution {
         return new ArrayList<List<String>>(hash.values());
     }
 }
+
+//
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        for(String str: strs){
+            char[] cha = str.toCharArray();
+            Arrays.sort(cha);
+            String sortedStr = String.valueOf(cha);
+            List<String> list = map.getOrDefault(sortedStr, new ArrayList<String>());
+            list.add(str);
+            map.put(sortedStr, list);
+        }
+        return new ArrayList<>(map.values());
+    }
+}
