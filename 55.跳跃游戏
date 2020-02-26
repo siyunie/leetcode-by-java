@@ -36,3 +36,49 @@ class Solution {
         return pos==0;
     }
 }
+
+//方法一写法二
+
+class Solution {
+    public boolean canJump(int[] nums) {
+        int end = nums.length - 1;
+        for(int i = nums.length - 2; i >= 0; i--){
+            if(nums[i] >= end - i){
+                end = i;
+            }
+        }
+        return end == 0;
+    }
+}
+
+/*
+方法二:
+只用判断为0的点,因为是非负数组,所以只要所有的0点都能被跨越就一定能到终点,所以只要0前面有一个位置能跨越0,就能通过
+
+*/
+
+class Solution {
+    public boolean canJump(int[] nums) {
+        if(nums[0] == 0 && nums.length == 1){
+            return true;
+        }else if(nums[0] == 0 && nums.length > 1){
+            return false;
+        }
+
+        for(int i = 1; i < nums.length - 1; i++){
+            if(nums[i] == 0){
+                int j = i - 1;
+                while(j >= 0){
+                    if(nums[j] > i - j){
+                        break;
+                    }
+                    j--;
+                }
+                if(j == -1){
+                    return false;
+                }
+            }
+        }
+        return true;     
+    }
+}
