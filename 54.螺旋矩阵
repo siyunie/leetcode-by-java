@@ -83,3 +83,62 @@ class Solution {
         return res;
     }
 }
+
+/*
+方法二:直接循环输出
+不用考虑走的圈数,直接按题目要求先从左往右,再从上往下,再从右往左,再从下往上,在while循环中维持四个while循环来完成上述过程,依次添加节点
+并且用count保存走过的点数,当count==所有数时直接结束循环即可
+
+*/
+
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> list = new ArrayList<>();
+        if(matrix.length == 0){
+            return list;
+        }
+        int top = 0;
+        int bottom = matrix.length - 1;
+        int left = 0;
+        int right = matrix[0].length - 1;
+        int count = 0;
+        int max = matrix.length * matrix[0].length;
+        while(count < max){
+            int i = top;
+            int j = left;
+            while(j <= right && count < max){
+                list.add(matrix[i][j]);
+                j++;
+                count++;
+            }
+            j--;
+            top++;
+            i = top;
+            while(i <= bottom && count < max){
+                list.add(matrix[i][j]);
+                i++;
+                count++;
+            }
+            i--;
+            right--;
+            j = right;
+            while(j >= left && count < max){
+                list.add(matrix[i][j]);
+                j--;
+                count++;
+            }
+            j++;
+            bottom--;
+            i = bottom;
+            while(i >= top && count < max){
+                list.add(matrix[i][j]);
+                i--;
+                count++;
+            }
+            i++;
+            left++;
+            j = left;
+        }
+        return list;
+    }
+}
