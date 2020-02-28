@@ -26,3 +26,26 @@ class Solution {
         return c[c.length - 1].length();
     }
 }
+
+/*
+方法二:倒序遍历
+从后往前遍历,找到第一个不为空格的字符即为最后一个单词的末尾,然后继续往前,找到最后一个单词的开头,计算头尾差即可
+
+*/
+
+class Solution {
+    public int lengthOfLastWord(String s) { 
+        int right = s.length() - 1;
+        while(right >= 0 && s.charAt(right) == ' '){
+            right--;
+        }
+        if(right < 0){
+            return 0;
+        }
+        int left = right;
+        while(left >= 0 && s.charAt(left) != ' '){
+            left--;
+        }
+        return right - left;
+    }
+}
