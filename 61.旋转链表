@@ -30,9 +30,7 @@
 因为k有可能大于链表长度,所以k = k%count 即count - 1 - k%count
 因为k多走n个链表长度等于做了n次循环又回到了初始状态
 
-
 */
-
 
 class Solution {
     public ListNode rotateRight(ListNode head, int k) {
@@ -56,5 +54,46 @@ class Solution {
         head = head.next;
         new_tail.next = null;
         return head;
+    }
+}
+
+
+
+/*
+方法二:直接倒序找倒数第k%len个节点即为新的头节点,将前一节点的next置为null,然后把原来的尾节点接到原来的头节点前即可
+
+*/
+
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null || k == 0){
+            return head;
+        }
+        int len = 0;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode tmp = dummy;
+        while(tmp.next != null){
+            len++;
+            tmp = tmp.next;
+        }
+        k %= len;
+        if(k == 0){
+            return head;
+        }
+        tmp = dummy;
+        while(k != 0){
+            tmp = tmp.next;
+            k--;
+        }
+        ListNode pre = dummy;
+        while(tmp.next != null){
+            tmp = tmp.next;
+            pre = pre.next;
+        }
+        ListNode cur = pre.next;
+        pre.next = null;
+        tmp.next = dummy.next;
+        return cur;
     }
 }
