@@ -44,3 +44,29 @@ class Solution {
         return newDigits;
     }
 }
+
+/*
+方法二:暴力破解
+
+*/
+
+class Solution {
+    public int[] plusOne(int[] digits) {
+        int cur = 0;
+        int residual = 0;
+        digits[digits.length - 1] += 1;
+        for(int i = digits.length - 1; i >= 0; i--){
+            cur = residual + digits[i];
+            residual = cur/10;
+            digits[i] = cur % 10;
+        }
+        if(residual == 0){
+            return digits;
+        }else{
+            int[] res = new int[digits.length + 1];
+            res[0] = residual;
+            System.arraycopy(digits, 0, res, 1, digits.length);
+            return res;
+        }
+    }
+}
