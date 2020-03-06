@@ -61,3 +61,38 @@ class Solution {
         }
     }
 }
+
+/*
+方法二:二分法
+调用两次二分法 第一次二分法确定target所在行,第二次二分法确定target所在具体位置
+
+*/
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if(matrix.length == 0 || matrix[0].length == 0 ||  target < matrix[0][0] || target > matrix[matrix.length - 1][matrix[0].length - 1]){
+            return false;
+        }
+        int top = 0;
+        int bottom = matrix.length - 1;
+        while(top < bottom){
+            int mid = (top + bottom + 1) >>> 1;
+            if(target < matrix[mid][0]){
+                bottom = mid - 1;
+            }else{
+                top = mid;
+            }
+        }
+        int left = 0;
+        int right = matrix[0].length - 1;
+        while(left < right){
+            int mid = (left + right + 1) >>> 1;
+            if(target < matrix[top][mid]){
+                right = mid - 1;
+            }else{
+                left = mid;
+            }
+        }
+        return matrix[top][left] == target;
+    }
+}
