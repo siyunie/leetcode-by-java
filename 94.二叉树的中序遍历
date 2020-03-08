@@ -84,3 +84,38 @@ class Solution {
         return list;
     }
 }
+
+/*
+方法三:莫里斯遍历
+展开成链表,思想就是不断的把当前节点接到左子树的最右节点的右边
+如果root无左子树,就把当前节点root添加进结果集,然后进入右子树 root = root.right
+如果有左子树,就找到左子树的最右节点, 就把最右节点的右节点指向root,同时保存root的左节点作为next
+然后断开root和左子树的连接,即把root.left = null,然后root = next
+即进入原来的左子树
+
+*/
+
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if(root == null){
+            return new ArrayList<Integer>();
+        }
+        List<Integer> list = new ArrayList<Integer>();
+        while(root != null){
+            if(root.left == null){
+                list.add(root.val);
+                root = root.right;
+            }else{
+                TreeNode leftRight = root.left;
+                TreeNode next = leftRight;
+                while(leftRight.right != null){
+                    leftRight = leftRight.right;
+                }
+                leftRight.right = root;
+                root.left = null;
+                root = next;
+            }
+        }
+        return list;
+    }
+}
