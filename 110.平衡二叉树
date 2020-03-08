@@ -68,3 +68,27 @@ class Solution {
         return new Node(Math.max(left.depth, right.depth) + 1, true);
     }
 }
+
+/*
+方法二:标准递归
+不用构建新类,如果不是平衡树,返回-1,每次判断左右有-1就直接返回即可
+
+*/
+
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return findTreeDepth(root) != -1;
+    }
+    
+    private int findTreeDepth(TreeNode root){
+        if(root == null){
+            return 0;
+        }
+        int left = findTreeDepth(root.left);
+        int right = findTreeDepth(root.right);
+        if(left == - 1 || right == -1){
+            return -1;
+        }
+        return Math.abs(left - right) > 1 ? -1 : Math.max(left, right) + 1;
+    }
+}
