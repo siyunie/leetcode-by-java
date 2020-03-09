@@ -125,3 +125,34 @@ class Solution {
         }
     }
 }
+
+//
+
+class Solution {
+    List<List<Integer>> res;
+    public List<List<Integer>> combine(int n, int k) {
+        res = new ArrayList<>();
+        if(n < 1 || k < 1){
+            return res;
+        }
+        boolean[] used = new boolean[n + 1];
+        backtrack(n, k, used, new Stack<Integer>(), 0);
+        return res;
+    }
+    private void backtrack(int n, int residual,boolean[] used, Stack<Integer> stack, int start){
+        if(residual == 0){
+            res.add(new ArrayList<>(stack));
+            return;
+        }
+        for(int i = start; i < n && (n - i) >= residual; i++){
+            if(used[i + 1]){
+                continue;
+            }
+            stack.push(i + 1);
+            used[i + 1] = true;
+            backtrack(n, residual - 1, used, stack, i + 1);
+            used[i + 1] = false;
+            stack.pop();
+        }
+    }
+}
