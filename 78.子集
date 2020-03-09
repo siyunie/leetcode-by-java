@@ -41,3 +41,27 @@ class Solution {
         }
     }
 }
+
+//
+
+class Solution {
+    List<List<Integer>> list;
+    public List<List<Integer>> subsets(int[] nums) {
+        list = new ArrayList<>();
+        if(nums.length == 0){
+            list.add(new ArrayList<Integer>());
+            return list;
+        }
+        backtrack(nums, new Stack<Integer>(), 0);
+        return list;
+    }
+
+    private void backtrack(int[] nums, Stack<Integer> stack, int start){
+        list.add(new ArrayList<>(stack));
+        for(int i = start; i < nums.length; i++){
+            stack.push(nums[i]);
+            backtrack(nums, stack, i + 1);
+            stack.pop();
+        }     
+    }
+}
