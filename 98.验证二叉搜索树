@@ -57,6 +57,31 @@ class Solution {
     }
 }
 
+//
+
+class Solution {
+    TreeNode pre = null;
+    public boolean isValidBST(TreeNode root) {
+        return inorder(root);
+    }
+    private boolean inorder(TreeNode root){
+        if(root == null){
+            return true;
+        }
+        if(!inorder(root.left)){
+            return false;
+        }
+        if(pre != null && root.val <= pre.val){
+            return false;
+        }
+        pre = root;
+        if(!inorder(root.right)){
+            return false;
+        }
+        return true;
+    }
+}
+
 /*
 方法二：中序遍历 栈
 */
