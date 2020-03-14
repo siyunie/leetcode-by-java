@@ -44,7 +44,11 @@ class Solution {
     }
 }
 
-//
+/*
+方法二:迭代
+在while循环里顺序处理重复节点, cur == null || cur.next == null时结束
+
+*/
 
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
