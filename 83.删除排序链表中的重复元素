@@ -34,3 +34,20 @@ class Solution {
         return head;
     }
 }
+
+//
+
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null){
+            return head;
+        }
+        ListNode next = deleteDuplicates(head.next);
+        if(next != null && next.val == head.val){
+            return next;
+        }else{
+            head.next = next;
+            return head;
+        }
+    }
+}
