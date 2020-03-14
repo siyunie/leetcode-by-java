@@ -44,6 +44,26 @@ class Solution {
     }
 }
 
+//
+
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null){
+            return head;
+        }      
+        ListNode next = head.next;
+        if(next != null && next.val == head.val){
+            while(next != null && head.val == next.val){
+                next = next.next;
+            }
+            return deleteDuplicates(next);
+        }else{
+            head.next = deleteDuplicates(next);
+            return head;
+        }
+    }
+}
+
 /*
 方法二:迭代
 在while循环里顺序处理重复节点, cur == null || cur.next == null时结束
