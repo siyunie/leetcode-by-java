@@ -32,6 +32,15 @@ class Solution {
     }
 }
 
+//
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        System.arraycopy(nums2, 0, nums1, m, n);
+        Arrays.sort(nums1);
+    }
+}
+
 
 /*
 方法二:排序数组,数组都有序,想到可以用双指针,分别指向两个数组头,依次比较,移动指针,但是题目要求合并到nums1中
